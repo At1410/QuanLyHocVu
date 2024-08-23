@@ -1,8 +1,9 @@
 import React from 'react';
 import { Box, Typography, TextField, Button, styled, Paper } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import BackgroundImage from '../../img/Background.png';
 
-export default function LoginForm() {
+export default function LoginForm({ setIsLoggedIn }) {
     // Style
     const backgroundStyle = {
         backgroundImage: `url(${BackgroundImage})`,
@@ -34,9 +35,26 @@ export default function LoginForm() {
 
 
     // Xử lý
+    const navigate = useNavigate();
+
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        // Lấy giá trị tên đăng nhập và mật khẩu từ các trường input
+        const username = e.target.elements.username.value;
+        const password = e.target.elements.password.value;
+
+        // Kiểm tra tên đăng nhập và mật khẩu
+        if (username === 'admin' && password === 'admin') {
+            // Nếu tên đăng nhập và mật khẩu đúng, chuyển hướng đến trang chủ của admin
+            setIsLoggedIn(true);
+            navigate('/');
+        } else {
+            // Nếu tên đăng nhập hoặc mật khẩu không đúng, hiển thị thông báo lỗi
+            alert('Tên đăng nhập hoặc mật khẩu không đúng');
+        }
     }
+
     return (
         <div>
             <Box style={backgroundStyle}>
@@ -52,6 +70,7 @@ export default function LoginForm() {
                             fullWidth
                             margin="normal"
                             required
+                            name="username"
                         />
                         <TextField
                             autoComplete="off"
@@ -61,6 +80,7 @@ export default function LoginForm() {
                             fullWidth
                             margin="normal"
                             required
+                            name="password"
                         />
                         <Button
                             type="submit"
