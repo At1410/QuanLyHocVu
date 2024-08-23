@@ -5,7 +5,10 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 
+
 import BG from "../../../img/Background.png";
+import CreateStaff from './CreateStaff';
+
 
 function Information() {
     //Style
@@ -37,30 +40,40 @@ function Information() {
         marginRight: 10,
     });
 
-    return (
-        <StyleDiv>
-            <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-                {Array.from(Array(3)).map((_, index) => (
-                    <Grid item xs={2} sm={4} md={4} key={index}>
-                        <Item>
-                            <StyledItem>
-                                <StyleImg src={BG} alt="ImgTC" />
-                            </StyledItem>
-                            <div>
-                                <p>Tên nhân viên: </p>
-                                <p>Chức vụ: </p>
-                                <p>Ngày sinh: </p>
-                                <p>Giới tính: </p>
-                                <p>Địa chỉ: </p>
-                                <p>Số điện thoại: </p>
-                                <p>Email: </p>
-                            </div>
+    const StyleDivItem = styled('div')({
+        textAlign: 'left',
+        marginLeft: 10,
+        color: '#000000',
+    });
 
-                        </Item>
-                    </Grid>
-                ))}
-            </Grid>
-        </StyleDiv>
+
+    return (
+        <div>
+            <StyleDiv>
+                <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+                    {Array.from(Array(3)).map((_, index) => (
+                        <Grid item xs={2} sm={4} md={4} key={index}>
+                            <Item>
+                                <StyledItem>
+                                    <StyleImg src={BG} alt="ImgTC" />
+                                    <StyleDivItem>
+                                        <p>Tên nhân viên: </p>
+                                        <p>Chức vụ: </p>
+                                        <p>Ngày sinh: </p>
+                                        <p>Giới tính: </p>
+                                        <p>CMND: </p>
+                                        <p>Địa chỉ: </p>
+                                        <p>Quê quán: </p>
+                                        <p>Số điện thoại: </p>
+                                    </StyleDivItem>
+                                </StyledItem>
+                            </Item>
+                        </Grid>
+                    ))}
+                </Grid>
+            </StyleDiv>
+            <CreateStaff />
+        </div>
     );
 }
 
