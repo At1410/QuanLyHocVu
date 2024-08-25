@@ -22,7 +22,7 @@ function ManagementClassRoomHome() {
     });
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginLeft: '10px' }}>
             <StyleButton>Danh sách các lớp</StyleButton>
             <StyleButton>Tạo lớp học mới</StyleButton>
             <StyleButton>Thêm bé vào nhà trẻ</StyleButton>

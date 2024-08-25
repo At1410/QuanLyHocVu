@@ -46,11 +46,9 @@ export default function LoginForm({ setIsLoggedIn }) {
 
         // Kiểm tra tên đăng nhập và mật khẩu
         if (username === 'admin' && password === 'admin') {
-            // Nếu tên đăng nhập và mật khẩu đúng, chuyển hướng đến trang chủ của admin
             setIsLoggedIn(true);
             navigate('/');
         } else {
-            // Nếu tên đăng nhập hoặc mật khẩu không đúng, hiển thị thông báo lỗi
             alert('Tên đăng nhập hoặc mật khẩu không đúng');
         }
     }

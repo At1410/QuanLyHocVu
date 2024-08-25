@@ -33,7 +33,8 @@ export default function Navbar() {
     return (
         <AppBar position="static" sx={{
             backgroundColor: "#ffffff",
-            borderRadius: 2
+            borderRadius: 2,
+            marginTop: 1,
         }}>
             <Toolbar>
                 <IconButton edge="start" aria-label="logo" sx={{}}>
@@ -56,7 +57,16 @@ export default function Navbar() {
                         <StyleButton isActive={location.pathname === "/nhanvien"}>Quản lý nhân viên</StyleButton>
                     </Link>
                     <Link to="/dangxuat" style={{ textDecoration: 'none' }}>
-                        <StyleButton >Đăng xuất</StyleButton>
+                        <StyleButton isActive={location.pathname === "/dangxuat"}
+                            onClick={() => {
+                                const confirmLogout = window.confirm("Bạn có chắc chắn muốn đăng xuất không?");
+                                if (confirmLogout) {
+                                    // Thực hiện hành động đăng xuất ở đây
+                                    console.log("Đăng xuất");
+                                    // Ví dụ: sử dụng `navigate` từ `react-router-dom` để chuyển hướng tới trang đăng nhập
+                                    // navigate('/login');
+                                }
+                            }}>Đăng xuất</StyleButton>
                     </Link>
                 </div>
             </Toolbar>
