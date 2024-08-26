@@ -17,7 +17,7 @@ export default function Footer() {
         }}>
 
             <div>
-                <img src={logo} style={{
+                <img src={logo} alt="Logo" style={{
                     width: "20%",
                     marginTop: "10px",
                     marginLeft: "10px",
