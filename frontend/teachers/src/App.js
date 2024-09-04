@@ -1,9 +1,8 @@
-import logo from './logo.svg';
 
 function App() {
   return (
     <div>
-      <h1>Hello Teachers</h1>
+      <h1>Hello teacher</h1>
     </div>
   );
 }

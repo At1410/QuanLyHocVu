@@ -12,8 +12,11 @@ const routes = require('./src/routes/route');
 
 // Sử dụng router cho các route
 app.use('/', routes);
-app.use('/teacher', routes);
+app.use('/giao-vien', routes);
 app.use('/loai', routes);
+app.use('/thong-tin', routes);
+app.use('/nhan-vien', routes);
+app.use('/dang-ky', routes);
 
 // Cấu hình port và khởi động server
 const PORT = process.env.PORT || 5000;

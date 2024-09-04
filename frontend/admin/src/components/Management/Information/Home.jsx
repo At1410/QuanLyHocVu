@@ -1,11 +1,28 @@
 import React from 'react';
+import Information from './Information';
+import SearchBar from '../SearchBar';
+import CreateInf from './CreateInf';
+import { styled } from '@mui/material';
 
-function Information() {
+function HomeInf() {
+
+    // Style
+    const StyleDiv = styled('div')({
+        display: 'flex',
+        justifyContent: 'center',
+        padding: '20px',
+        marginTop: 70,
+    })
+
     return (
         <div>
-            {/* Nội dung của ClassRoom */}
+            <StyleDiv>
+                <SearchBar />
+                <CreateInf />
+            </StyleDiv>
+            <Information />
         </div>
     );
 }
 
-export default Information;
+export default HomeInf;

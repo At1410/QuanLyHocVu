@@ -1,4 +1,6 @@
 import React from 'react';
+import Swal from 'sweetalert2'
+
 import { Box, Typography, TextField, Button, styled, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import BackgroundImage from '../../img/Background.png';
@@ -48,8 +50,20 @@ export default function LoginForm({ setIsLoggedIn }) {
         if (username === 'admin' && password === 'admin') {
             setIsLoggedIn(true);
             navigate('/');
+
+            Swal.fire({
+                position: "center",
+                icon: "success",
+                title: "Đăng nhập thành công!",
+                showConfirmButton: false,
+                timer: 1500
+            })
         } else {
-            alert('Tên đăng nhập hoặc mật khẩu không đúng');
+            Swal.fire({
+                icon: "error",
+                title: "Đăng nhập không thành công!",
+                text: "Tên hoặc mật khẩu đăng nhập không đúng!",
+            })
         }
     }
 
