@@ -5,7 +5,7 @@ import { styled, Typography } from '@mui/material';
 export default function HomePage() {
     const StyleImg = styled('img')({
         width: '100%',
-        height: 400,
+        height: '35rem',
         marginBottom: '10px',
         marginTop: '10px',
     });
@@ -24,7 +24,7 @@ export default function HomePage() {
     }, []);
 
     return (
-        <div>
+        <div style={{ marginTop: 70 }}>
             <StyleImg src={Img} alt="Img" />
             <div style={{ margin: '10px' }}>
                 {data.map(item => (

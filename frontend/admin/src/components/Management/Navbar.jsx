@@ -8,6 +8,11 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import { styled } from '@mui/material';
 
+import Swal from 'sweetalert2';
+import { useNavigate } from 'react-router-dom';
+
+
+
 
 
 export default function Navbar() {
@@ -30,11 +35,39 @@ export default function Navbar() {
         },
     }));
 
+    // Hàm xử lý đăng xuất với xác nhận
+    const navigate = useNavigate();
+
+
+    const handleLogout = () => {
+        Swal.fire({
+            title: 'Bạn có chắc chắn muốn đăng xuất không?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Đăng xuất',
+            cancelButtonText: 'Hủy',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: "Đăng xuất thành công!",
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    navigate('/dangnhap');
+                });
+            }
+        });
+    };
+
+
     return (
-        <AppBar position="static" sx={{
+        <AppBar position="fixed" sx={{
             backgroundColor: "#ffffff",
             borderRadius: 2,
             marginTop: 1,
+            zIndex: 1,
         }}>
             <Toolbar>
                 <IconButton edge="start" aria-label="logo" sx={{}}>
@@ -56,18 +89,11 @@ export default function Navbar() {
                     <Link to="/nhanvien" style={{ textDecoration: 'none' }}>
                         <StyleButton isActive={location.pathname === "/nhanvien"}>Quản lý nhân viên</StyleButton>
                     </Link>
-                    <Link to="/dangxuat" style={{ textDecoration: 'none' }}>
-                        <StyleButton isActive={location.pathname === "/dangxuat"}
-                            onClick={() => {
-                                const confirmLogout = window.confirm("Bạn có chắc chắn muốn đăng xuất không?");
-                                if (confirmLogout) {
-                                    // Thực hiện hành động đăng xuất ở đây
-                                    console.log("Đăng xuất");
-                                    // Ví dụ: sử dụng `navigate` từ `react-router-dom` để chuyển hướng tới trang đăng nhập
-                                    // navigate('/login');
-                                }
-                            }}>Đăng xuất</StyleButton>
-                    </Link>
+                    <StyleButton isActive={location.pathname === "/dangxuat"}
+                        onClick={handleLogout}
+                    >
+                        Đăng xuất
+                    </StyleButton>
                 </div>
             </Toolbar>
         </AppBar>

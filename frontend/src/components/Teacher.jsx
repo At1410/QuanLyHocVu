@@ -20,7 +20,7 @@ function Teacher() {
 
     const StyleDiv = styled('div')({
         textAlign: 'center',
-        marginTop: 20,
+        marginTop: 90,
     });
 
     const StyleImg = styled('img')({
@@ -41,7 +41,7 @@ function Teacher() {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:5000/teacher')
+        fetch('http://localhost:5000/giao-vien')
             .then(response => response.json())
             .then(data => {
                 console.log(data);
@@ -60,26 +60,32 @@ function Teacher() {
         return `${year}-${month}-${day}`;
     };
 
-    return (
-        <div>
-            <StyleDiv>
-                <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                    {data.map(item => (
-                        <Grid key={item.id} item xs={6}>
-                            <Item>
-                                <StyleImg src={BG} alt="ImgTC" />
-                                <StyleDivItem>
-                                    <p>Tên Giáo Viên: {item.Ten_Nhan_Vien}</p>
-                                    <p>Ngày sinh: {formatDate(item.Ngay_sinh)}</p>
-                                    <p>Giới tính: {item.Gioi_tinh}</p>
-                                </StyleDivItem>
-                            </Item>
-                        </Grid>
-                    ))}
+    const Gender = (data) => {
+        if (data === 1) {
+            return 'Nam';
+        } else {
+            return 'Nữ';
+        }
+    };
 
-                </Grid>
-            </StyleDiv>
-        </div>
+    return (
+        <StyleDiv>
+            <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                {data.map(item => (
+                    <Grid item xs={6} key={`${item.id}-${item.Ten_Nhan_Vien}`}>
+                        <Item>
+                            <StyleImg src={BG} alt="ImgTC" />
+                            <StyleDivItem>
+                                <p>Tên Giáo Viên: {item.Ten_Nhan_Vien}</p>
+                                <p>Ngày sinh: {formatDate(item.Ngay_sinh)}</p>
+                                <p>Giới tính: {Gender(item.Gioi_tinh)}</p>
+                            </StyleDivItem>
+                        </Item>
+                    </Grid>
+                ))}
+
+            </Grid>
+        </StyleDiv>
     );
 }
 

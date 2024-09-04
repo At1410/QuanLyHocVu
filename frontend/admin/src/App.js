@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Navbar from './components/Management/Navbar';
 import Homepage from './components/Management/Homepage';
 import ClassRoom from './components/Management/Classroom/Home';
@@ -9,10 +9,11 @@ import LoginForm from './components/Login/LoginForm';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const location = useLocation();
 
   return (
-    <Router>
-      {isLoggedIn && <Navbar />}
+    <>
+      {isLoggedIn && location.pathname !== '/dangnhap' && <Navbar setIsLoggedIn={setIsLoggedIn} />}
       <Routes>
         <Route path="/dangnhap" element={<LoginForm setIsLoggedIn={setIsLoggedIn} />} />
         {isLoggedIn ? (
@@ -21,13 +22,12 @@ function App() {
             <Route path="/lophoc" element={<ClassRoom />} />
             <Route path="/thongtin" element={<Information />} />
             <Route path="/nhanvien" element={<Staff />} />
-            <Route path="/dangxuat" element={<Navigate to="/dangnhap" replace />} />
           </>
         ) : (
           <Route path="*" element={<Navigate to="/dangnhap" replace />} />
         )}
       </Routes>
-    </Router>
+    </>
   );
 }
 

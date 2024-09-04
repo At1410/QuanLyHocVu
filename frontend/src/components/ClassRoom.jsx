@@ -18,7 +18,7 @@ export default function ClassRoom() {
 
     const StyleDiv = styled('div')({
         textAlign: 'center',
-        marginTop: 20,
+        marginTop: 90,
         marginBottom: 20,
     });
 
