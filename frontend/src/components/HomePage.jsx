@@ -5,7 +5,7 @@ import { styled, Typography } from '@mui/material';
 export default function HomePage() {
     const StyleImg = styled('img')({
         width: '100%',
-        height: '35rem',
+        height: '30rem',
         marginBottom: '10px',
         marginTop: '10px',
     });
@@ -13,7 +13,7 @@ export default function HomePage() {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:5000/')
+        fetch('http://localhost:5000/thong-tin')
             .then(response => response.json())
             .then(data => {
                 setData(data);

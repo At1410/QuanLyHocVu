@@ -63,7 +63,7 @@ export default function CreateInf({ }) {
                 console.error('Lỗi khi thêm dữ liệu:', error);
                 Swal.fire(
                     'Lỗi!',
-                    'Có lỗi xảy ra khi thêm dữ liệu.',
+                    'Thêm dữ liệu không thành công!',
                     'error'
                 );
             }

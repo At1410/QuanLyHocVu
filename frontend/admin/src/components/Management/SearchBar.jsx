@@ -14,21 +14,24 @@ function SearchBar({ onSearch }) {
   };
 
   return (
-    <TextField
-      value={searchQuery}
-      onChange={handleSearch}
-      placeholder="Nhập dữ liệu tìm kiếm"
-      variant="outlined"
-      size="small"
-      sx={{ width: '350px' }}
-      InputProps={{
-        startAdornment: (
-          <InputAdornment position="start">
-            <SearchIcon />
-          </InputAdornment>
-        ),
-      }}
-    />
+    <div>
+      <TextField
+        value={searchQuery}
+        onChange={handleSearch}
+        placeholder="Nhập dữ liệu tìm kiếm"
+        variant="outlined"
+        size="small"
+        sx={{ width: '350px' }}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon />
+            </InputAdornment>
+          ),
+        }}
+      />
+    </div>
+
   );
 }
 

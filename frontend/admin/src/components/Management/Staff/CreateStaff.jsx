@@ -89,7 +89,7 @@ export default function CreateStaff() {
                 Swal.fire({
                     position: "center",
                     icon: "error",
-                    title: "Đăng ký không thành công!",
+                    title: "Thêm dữ liệu không thành công!",
                     showConfirmButton: false,
                     timer: 1500
                 });
@@ -101,6 +101,8 @@ export default function CreateStaff() {
         <div>
             <Button variant="contained" onClick={handleOpen}
                 sx={{
+                    fontFamily: 'Roboto, sans-serif',
+                    fontSize: '16px',
                     marginLeft: 5,
                     backgroundColor: '#89b847',
                     '&:hover': {
@@ -110,6 +112,7 @@ export default function CreateStaff() {
             >
                 Thêm nhân viên
             </Button>
+
             <Modal open={open} onClose={handleClose}
                 sx={{
                     display: 'flex',
@@ -262,6 +265,7 @@ export default function CreateStaff() {
                             backgroundColor: '#89b847',
                             '&:hover': {
                                 backgroundColor: '#75a73f',
+                                cursor: 'pointer'
                             },
                         }}
                     >

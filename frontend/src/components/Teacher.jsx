@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
-import { styled } from '@mui/material/styles';
+import { styled, Pagination, PaginationItem } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
-
-import BG from "../img/Baby.png";
 
 function Teacher() {
     //Style
@@ -16,6 +14,13 @@ function Teacher() {
         textAlign: 'left',
         display: 'flex', // Sử dụng flexbox để bố trí các phần tử ngang hàng
         alignItems: 'center',
+    }));
+
+    const CustomPaginationItem = styled(PaginationItem)(({ theme }) => ({
+        '&.Mui-selected': {
+            backgroundColor: '#ff99ac',
+            color: 'white',
+        },
     }));
 
     const StyleDiv = styled('div')({
@@ -44,8 +49,8 @@ function Teacher() {
         fetch('http://localhost:5000/giao-vien')
             .then(response => response.json())
             .then(data => {
-                console.log(data);
-                setData(data);
+                const filteredData = data.filter(employee => employee.trang_thai === 1);
+                setData(filteredData);
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
@@ -68,13 +73,28 @@ function Teacher() {
         }
     };
 
+    //Hiện thị
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 4;
+
+    // Xử lý thay đổi trang
+    const handlePageChange = (event, value) => {
+        setCurrentPage(value);
+    };
+
+    // Tính toán dữ liệu nhân viên hiển thị trên mỗi trang
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentData = data.slice(indexOfFirstItem, indexOfLastItem);
+
+
     return (
         <StyleDiv>
             <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                 {data.map(item => (
                     <Grid item xs={6} key={`${item.id}-${item.Ten_Nhan_Vien}`}>
                         <Item>
-                            <StyleImg src={BG} alt="ImgTC" />
+                            <StyleImg src={item.image_nv} alt={item.Ten_Nhan_Vien} />
                             <StyleDivItem>
                                 <p>Tên Giáo Viên: {item.Ten_Nhan_Vien}</p>
                                 <p>Ngày sinh: {formatDate(item.Ngay_sinh)}</p>
@@ -85,6 +105,20 @@ function Teacher() {
                 ))}
 
             </Grid>
+
+            <Pagination
+                count={Math.ceil(data.length / itemsPerPage)}
+                page={currentPage}
+                onChange={handlePageChange}
+                sx={{
+                    marginTop: 2,
+                    justifyContent: 'center',
+                    display: 'flex',
+                    color: '#89b847'
+                }}
+
+                renderItem={(item) => <CustomPaginationItem {...item} />}
+            />
         </StyleDiv>
     );
 }

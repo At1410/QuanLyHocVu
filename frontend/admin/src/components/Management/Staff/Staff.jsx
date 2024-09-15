@@ -10,12 +10,10 @@ import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import BlockIcon from '@mui/icons-material/Block';
 
-import { Modal, TextField, Box, Button, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
+import { Modal, TextField, Box, Button, FormLabel, RadioGroup, FormControlLabel, Radio, Pagination, PaginationItem } from '@mui/material';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 
-import BG from "../../../img/Background.png";
-
-function Staff() {
+function Staff({ searchQuery }) {
     //Style
     const Item = styled(Paper)(({ theme }) => ({
         backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -28,17 +26,23 @@ function Staff() {
         marginBottom: '15px',
     }));
 
+    const CustomPaginationItem = styled(PaginationItem)(({ theme }) => ({
+        '&.Mui-selected': {
+            backgroundColor: '#89b847',
+            color: 'white',
+        },
+    }));
+
     const StyleDiv = styled('div')({
         textAlign: 'center',
         marginTop: 20,
     });
 
     const StyleImg = styled('img')({
-        width: '150px', // Điều chỉnh kích thước ảnh
+        width: '150px',
         height: '250px',
         objectFit: 'cover',
         borderRadius: '5px',
-        marginLeft: '10px',
     });
 
     const StyleDivItem = styled('div')({
@@ -48,33 +52,45 @@ function Staff() {
 
     const StyleButton = styled('button')({
         borderRadius: 3,
-        backgroundColor: "#89b847",
-        color: '#ffffff',
+        backgroundColor: "#ffffff",
         paddingTop: 6,
         paddingBottom: 6,
         paddingLeft: 10,
         paddingRight: 10,
         marginTop: 10,
         border: '2px solid #89b847',
-        borderColor: "#89b847",
         alignItems: 'left',
+        '&:hover': {
+            cursor: 'pointer',
+        }
     })
 
     //Xử lý hiện thông tin
     const [data, setData] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 4;
 
     useEffect(() => {
         fetch('http://localhost:5000/nhan-vien')
             .then(response => response.json())
             .then(data => {
+                console.log(data);
                 const filteredData = data.filter(employee => employee.trang_thai === 1);
-                // console.log(filteredData);
                 setData(filteredData);
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
             });
     }, []);
+
+    const handlePageChange = (event, value) => {
+        setCurrentPage(value);
+    };
+
+    // Tính toán dữ liệu nhân viên hiển thị trên mỗi trang
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentData = data.slice(indexOfFirstItem, indexOfLastItem);
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -260,7 +276,7 @@ function Staff() {
 
             Swal.fire(
                 'Đã cập nhật!',
-                'Trạng thái nhân viên đã được cập nhật.',
+                'Nhân viên đã được nghỉ việc.',
                 'success'
             );
 
@@ -279,11 +295,13 @@ function Staff() {
         <div>
             <StyleDiv>
                 <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                    {data.map((item, index) => (
+                    {currentData.map((item, index) => (
                         <Grid key={`${item.id}-${index}`} item xs={6}>
                             <Item>
                                 <Grid item xs={4}>
-                                    <StyleImg src={BG} alt="ImgTC" />
+                                    <StyleImg
+                                        src={item.image_nv}
+                                        alt={item.Ten_Nhan_Vien} />
                                 </Grid>
                                 <Grid item xs={6}>
                                     <StyleDivItem>
@@ -304,27 +322,37 @@ function Staff() {
                                         marginRight: '10px',
                                         marginLeft: '10px'
                                     }}>
-                                        <StyleButton onClick={() => handleEdit(item)} sx={{
-                                            '&:hover': {
-                                                backgroundColor: "#75a73f",
-                                            },
-                                        }}>
+                                        <StyleButton
+                                            onClick={() => handleEdit(item)}
+                                            sx={{
+                                                color: '#89b847',
+                                                '&:hover': {
+                                                    backgroundColor: "#75a73f",
+                                                    color: "#ffffff"
+                                                },
+                                            }}>
                                             <ModeEditIcon />
                                         </StyleButton>
-                                        <StyleButton onClick={() => handleDelete(item.id)} sx={{
-                                            '&:hover': {
-                                                borderColor: "#d00000",
-                                                backgroundColor: "#d00000",
-                                            },
-                                        }}>
+                                        <StyleButton onClick={() => handleDelete(item.id)}
+                                            sx={{
+                                                color: '#d00000',
+                                                borderColor: '#d00000',
+                                                '&:hover': {
+                                                    backgroundColor: "#d00000",
+                                                    color: "#ffffff"
+                                                },
+                                            }}>
                                             <DeleteIcon />
                                         </StyleButton>
-                                        <StyleButton onClick={() => handleTick(item.id, item.trang_thai)} sx={{
-                                            '&:hover': {
+                                        <StyleButton onClick={() => handleTick(item.id, item.trang_thai)}
+                                            sx={{
                                                 color: '#d00000',
-                                                backgroundColor: "#75a73f",
-                                            },
-                                        }}>
+                                                borderColor: '#d00000',
+                                                '&:hover': {
+                                                    backgroundColor: "#d00000",
+                                                    color: "#ffffff"
+                                                },
+                                            }}>
                                             <BlockIcon />
                                         </StyleButton>
                                     </div>
@@ -335,6 +363,21 @@ function Staff() {
 
                 </Grid>
             </StyleDiv>
+
+            <Pagination
+                count={Math.ceil(data.length / itemsPerPage)}
+                page={currentPage}
+                onChange={handlePageChange}
+                sx={{
+                    marginTop: 2,
+                    justifyContent: 'center',
+                    display: 'flex',
+                    color: '#89b847'
+                }}
+
+                renderItem={(item) => <CustomPaginationItem {...item} />}
+            />
+
             <Modal open={open} onClose={handleClose}
                 sx={{
                     display: 'flex',
@@ -364,7 +407,6 @@ function Staff() {
                         name="tenNV"
                         variant="outlined"
                         value={employe.tenNV}
-                        // onChange={(e) => setEmployee.tenNV(e.target.value)}
                         onChange={handleChange}
                     />
 
@@ -376,12 +418,11 @@ function Staff() {
                             size="small"
                             fullWidth
                             label="Ngày sinh"
-                            name="nSing"
+                            name="nSinh"
                             type="date"
                             InputLabelProps={{ shrink: true }}
                             variant="outlined"
                             value={formatDate(employe.nSinh)}
-                            // onChange={(e) => setEmployee.nSinh(e.target.value)}
                             onChange={handleChange}
                         />
 
@@ -393,7 +434,6 @@ function Staff() {
                             name="sdt"
                             variant="outlined"
                             value={employe.sdt}
-                            //onChange={(e) => setEmployee.sdt(e.target.value)}
                             onChange={handleChange}
                         />
                     </div>
@@ -409,7 +449,6 @@ function Staff() {
                             variant="outlined"
                             value={employe.cmnd}
                             onChange={handleChange}
-                        // onChange={(e) => setEmployee.cmnd(e.target.value)}
                         />
 
                         <FormControl fullWidth size="small" sx={{ marginLeft: '10px' }}>
@@ -421,7 +460,7 @@ function Staff() {
                                 label="Chức vụ"
                                 name="chucVuId"
                                 onChange={handleChange}
-                            //onChange={(e) => setEmployee.chucVuId(e.target.value)}
+
                             >
                                 <MenuItem value={1}>Giáo viên</MenuItem>
                                 <MenuItem value={2}>Bảo vệ</MenuItem>
@@ -439,7 +478,7 @@ function Staff() {
                         variant="outlined"
                         value={employe.diaChi}
                         onChange={handleChange}
-                    //onChange={(e) => setEmployee.diaChi(e.target.value)}
+
                     />
 
                     <TextField
@@ -450,7 +489,7 @@ function Staff() {
                         variant="outlined"
                         value={employe.queQuan}
                         onChange={handleChange}
-                    //onChange={(e) => setEmployee.queQuan(e.target.value)}
+
                     />
 
 
@@ -465,7 +504,7 @@ function Staff() {
                             name="gioiTinh"
                             value={employe.gioiTinh}
                             onChange={handleChange}
-                        //onChange={(e) => setEmployee.gioiTinh(e.target.value)}
+
                         >
                             <FormControlLabel value={0} control={<Radio />} label="Nữ" />
                             <FormControlLabel value={1} control={<Radio />} label="Nam" />

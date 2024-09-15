@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 
-export default function Navbar() {
+export default function Navbar({ setIsLoggedIn }) {
 
     const location = useLocation();
 
@@ -32,12 +32,12 @@ export default function Navbar() {
         borderColor: "#89b847",
         '&:hover': {
             backgroundColor: "#75a73f",
+            cursor: 'pointer',
         },
     }));
 
     // Hàm xử lý đăng xuất với xác nhận
     const navigate = useNavigate();
-
 
     const handleLogout = () => {
         Swal.fire({
@@ -48,6 +48,9 @@ export default function Navbar() {
             cancelButtonText: 'Hủy',
         }).then((result) => {
             if (result.isConfirmed) {
+                // Xóa trạng thái đăng nhập khỏi localStorage
+                localStorage.setItem('isLoggedIn', 'false');
+                setIsLoggedIn(false);
                 Swal.fire({
                     position: "center",
                     icon: "success",
@@ -60,6 +63,7 @@ export default function Navbar() {
             }
         });
     };
+
 
 
     return (
@@ -81,7 +85,7 @@ export default function Navbar() {
                 </IconButton>
                 <div style={{ marginLeft: 'auto', display: 'flex', gap: '15px' }}>
                     <Link to="/lophoc" style={{ textDecoration: 'none' }}>
-                        <StyleButton isActive={location.pathname === "/lophoc"}>Quản lý học sinh</StyleButton>
+                        <StyleButton isActive={location.pathname === "/lophoc"}>Quản lý lớp học</StyleButton>
                     </Link>
                     <Link to="/thongtin" style={{ textDecoration: 'none' }}>
                         <StyleButton isActive={location.pathname === "/thongtin"}>Quản lý thông tin</StyleButton>

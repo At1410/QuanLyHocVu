@@ -4,13 +4,20 @@ import axios from 'axios';
 import Swal from 'sweetalert2'
 
 
-import { Grid, Modal, styled, Typography, TextField, Button, Box } from "@mui/material";
+import { Grid, Modal, styled, Typography, TextField, Button, Box, Pagination, PaginationItem } from "@mui/material";
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function Information() {
 
     //Style
+    const CustomPaginationItem = styled(PaginationItem)(({ theme }) => ({
+        '&.Mui-selected': {
+            backgroundColor: '#89b847',
+            color: 'white',
+        },
+    }));
+
     const StyleDiv = styled('div',)({
         padding: '10px',
         margin: '10px',
@@ -21,19 +28,22 @@ export default function Information() {
 
     const StyleButton = styled('button')({
         borderRadius: 3,
-        backgroundColor: "#89b847",
-        color: '#ffffff',
+        backgroundColor: "#ffffff",
         paddingTop: 6,
         paddingBottom: 6,
         paddingLeft: 10,
         paddingRight: 10,
         marginTop: 10,
         border: '2px solid #89b847',
-        borderColor: "#89b847",
+        '&:hover': {
+            cursor: 'pointer'
+        }
     })
 
     //Xử lý
     const [data, setData] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 3;
 
     useEffect(() => {
         fetch('http://localhost:5000/thong-tin')
@@ -46,6 +56,16 @@ export default function Information() {
                 console.error('Error fetching data:', error);
             });
     }, []);
+
+    // Xử lý thay đổi trang
+    const handlePageChange = (event, value) => {
+        setCurrentPage(value);
+    };
+
+    // Tính toán dữ liệu nhân viên hiển thị trên mỗi trang
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentData = data.slice(indexOfFirstItem, indexOfLastItem);
 
     //Xóa thông tin
     const handleDelete = async (id) => {
@@ -157,7 +177,7 @@ export default function Information() {
                     </Grid>
                 </Grid>
             </StyleDiv>
-            {data.map(item => (
+            {currentData.map(item => (
                 <StyleDiv key={item.id}>
                     <Grid container spacing={3}>
                         <Grid item xs={2}>
@@ -169,18 +189,25 @@ export default function Information() {
                         <Grid item xs>
                             <div style={{ display: 'flex', flexDirection: 'column', }}>
                                 <StyleButton onClick={() => handleEdit(item)} sx={{
+                                    color: "#89b847",
                                     '&:hover': {
                                         backgroundColor: "#75a73f",
+                                        color: "#ffffff",
+
                                     },
                                 }}>
                                     <ModeEditIcon />
                                 </StyleButton>
-                                <StyleButton onClick={() => handleDelete(item.id)} sx={{
-                                    '&:hover': {
+                                <StyleButton onClick={() => handleDelete(item.id)}
+                                    sx={{
                                         borderColor: "#d00000",
-                                        backgroundColor: "#d00000",
-                                    },
-                                }}>
+                                        color: "#d00000",
+                                        '&:hover': {
+                                            backgroundColor: "#d00000",
+                                            color: "#ffffff",
+
+                                        },
+                                    }}>
                                     <DeleteIcon />
                                 </StyleButton>
                             </div>
@@ -188,6 +215,19 @@ export default function Information() {
                     </Grid>
                 </StyleDiv>
             ))}
+
+            <Pagination
+                count={Math.ceil(data.length / itemsPerPage)}
+                page={currentPage}
+                onChange={handlePageChange}
+                sx={{
+                    marginTop: 2,
+                    justifyContent: 'center',
+                    display: 'flex',
+                }}
+
+                renderItem={(item) => <CustomPaginationItem {...item} />}
+            />
 
 
             {/* Modal */}
@@ -238,12 +278,6 @@ export default function Information() {
 
                     <Button variant="contained" onClick={handleSave}
                         sx={{
-                            // display: 'flex',
-                            // justifyContent: 'center',
-                            // margin: '0 auto',
-                            // padding: '5px 10px',
-                            // fontSize: '12px',
-                            // width: '90px',
                             backgroundColor: '#89b847',
                             '&:hover': {
                                 backgroundColor: '#75a73f',

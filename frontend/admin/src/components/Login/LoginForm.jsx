@@ -42,14 +42,13 @@ export default function LoginForm({ setIsLoggedIn }) {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        // Lấy giá trị tên đăng nhập và mật khẩu từ các trường input
         const username = e.target.elements.username.value;
         const password = e.target.elements.password.value;
 
-        // Kiểm tra tên đăng nhập và mật khẩu
         if (username === 'admin' && password === 'admin') {
+
+            localStorage.setItem('isLoggedIn', 'true');
             setIsLoggedIn(true);
-            navigate('/');
 
             Swal.fire({
                 position: "center",
@@ -57,16 +56,18 @@ export default function LoginForm({ setIsLoggedIn }) {
                 title: "Đăng nhập thành công!",
                 showConfirmButton: false,
                 timer: 1500
-            })
+            }).then(() => {
+                navigate('/');
+            });
+
         } else {
             Swal.fire({
                 icon: "error",
                 title: "Đăng nhập không thành công!",
                 text: "Tên hoặc mật khẩu đăng nhập không đúng!",
-            })
+            });
         }
     }
-
     return (
         <div>
             <Box style={backgroundStyle}>
