@@ -5,7 +5,7 @@ import { Paper, styled, Pagination, PaginationItem, Grid } from '@mui/material';
 import ReorderIcon from '@mui/icons-material/Reorder';
 import ReplayIcon from '@mui/icons-material/Replay';
 
-import ChildInClass from "./ChildInClass";
+import InClassStop from "./InClassStop";
 
 import axios from 'axios';
 import Swal from 'sweetalert2';
@@ -60,7 +60,6 @@ export default function ClassStop() {
 
 
     const [data, setData] = useState([]);
-    const [teachers, setTeachers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 3;
 
@@ -73,22 +72,6 @@ export default function ClassStop() {
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
-            });
-        fetch('http://localhost:5000/tre-em')
-            .then(response => response.json())
-            .then(data => {
-                setChild(data);
-            })
-            .catch(error => {
-                console.error('Error fetching students:', error);
-            });
-        fetch('http://localhost:5000/lop-giao-vien')
-            .then(response => response.json())
-            .then(data => {
-                setTeachers(data);
-            })
-            .catch(error => {
-                console.error('Error fetching students:', error);
             });
     }, []);
 
@@ -168,18 +151,11 @@ export default function ClassStop() {
         }
     };
 
-    const [child, setChild] = useState([]);
     const [openModal, setOpenModal] = useState(false);
-    const [childClass, setChildClass] = useState([]);
-    const [teacherClass, setTeacherClass] = useState([]);
+    const [currentClassId, setCurrentClassId] = useState(null);
 
     const handleOpenModal = (item) => {
-        const filterChildClass = child.filter(child => child.Lop_id === item.id);
-        console.log(filterChildClass);
-        setChildClass(filterChildClass);
-
-        const filterTeacherClass = teachers.filter(teachers => teachers.Lop_id === item.id);
-        setTeacherClass(filterTeacherClass);
+        setCurrentClassId(item.id);
         setOpenModal(true);
     };
 
@@ -256,11 +232,10 @@ export default function ClassStop() {
                 renderItem={(item) => <CustomPaginationItem {...item} />}
             />
 
-            <ChildInClass
+            <InClassStop
                 open={openModal}
                 handleClose={handleCloseModal}
-                children={childClass}
-                teachers={teacherClass}
+                classId={currentClassId}
             />
         </div>
     );

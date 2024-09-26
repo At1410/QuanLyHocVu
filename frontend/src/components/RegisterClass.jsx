@@ -10,15 +10,13 @@ export default function RegisterClass() {
     const StyleButton = styled('div')({
         backgroundColor: '#ff99ac',
         marginBottom: '30px',
-        padding: '10px',
+        padding: '5px',
         borderRadius: 3,
-        // borderColor: '#ff99ac',
         '&:hover': {
             backgroundColor: '#fbb1bd',
         }
     })
 
-    // Khai báo state để lưu trữ giá trị từ các trường form
     const [formData, setFormData] = useState({
         Ho_ten: '',
         Ngay_sinh_tre: '',
@@ -30,7 +28,6 @@ export default function RegisterClass() {
 
     const [errors, setErrors] = useState({});
 
-    // Hàm xử lý kiểm tra các trường trong form
     const validate = () => {
         let tempErrors = {};
         tempErrors.Ho_ten = formData.Ho_ten ? "" : "Tên phụ huynh là bắt buộc.";
@@ -43,7 +40,7 @@ export default function RegisterClass() {
         return Object.values(tempErrors).every(x => x === "");
     };
 
-    // Hàm xử lý khi có thay đổi trong các trường form
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -52,7 +49,6 @@ export default function RegisterClass() {
         });
     };
 
-    // Hàm xử lý khi submit form
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (validate()) {
@@ -102,6 +98,7 @@ export default function RegisterClass() {
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <TextField
+                            size='small'
                             fullWidth
                             label="Họ tên"
                             name="Ho_ten"
@@ -115,6 +112,7 @@ export default function RegisterClass() {
                     </Grid>
                     <Grid item xs={12}>
                         <TextField
+                            size='small'
                             fullWidth
                             label="Ngày sinh trẻ"
                             name="Ngay_sinh_tre"
@@ -131,6 +129,7 @@ export default function RegisterClass() {
                     <Grid item xs={12}>
                         <TextField
                             fullWidth
+                            size='small'
                             label="Số điện thoại"
                             name="Sdt"
                             variant="outlined"
@@ -143,6 +142,7 @@ export default function RegisterClass() {
                     </Grid>
                     <Grid item xs={12}>
                         <TextField
+                            size='small'
                             fullWidth
                             label="Địa chỉ"
                             name="Dia_chi"
@@ -156,6 +156,7 @@ export default function RegisterClass() {
                     </Grid>
                     <Grid item xs={12}>
                         <TextField
+                            size='small'
                             fullWidth
                             label="Ngày đến thăm"
                             name="Ngay_den_tham"
@@ -185,12 +186,12 @@ export default function RegisterClass() {
                         </FormControl>
                     </Grid>
                 </Grid>
-                <Box sx={{ mt: 3, textAlign: 'center' }}>
+                <Box size='small' sx={{ mt: 3, textAlign: 'center' }}>
                     <StyleButton type="submit" onClick={handleSubmit}>
                         Đăng Ký
                     </StyleButton>
                 </Box>
             </Box>
-        </Container>
+        </Container >
     );
 }

@@ -4,7 +4,7 @@ const db = require('../db/db');
 
 // Route GET 
 router.get('/giao-vien', (req, res) => {
-    db.query('SELECT * FROM nhanvien nv JOIN chucvu cv ON nv.Chuc_vu_id = cv.id WHERE cv.id = 1', (err, result) => {
+    db.query('SELECT nv.*, cv.Ten_chuc_vu FROM nhanvien nv JOIN chucvu cv ON nv.Chuc_vu_id = cv.id WHERE cv.id = 1', (err, result) => {
         if (err) {
             console.log(err);
             res.status(500).send('Có lỗi xảy ra!');
@@ -41,6 +41,35 @@ router.get('/loai', (req, res) => {
         }
     });
 });
+
+router.get('/lop', (req, res) => {
+    db.query('SELECT * FROM lop', (err, result) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send('Có lỗi xảy ra!');
+        } else {
+            console.log(result);
+            res.json(result);
+        }
+    });
+});
+
+router.get('/lop/:classId', (req, res) => {
+    const classId = req.params.classId;
+
+    const query = `SELECT lop.*, loai.So_luong, loai.SL_giaovien FROM lop JOIN loai ON lop.loai_id = loai.id WHERE lop.id = ?`;
+
+    db.query(query, [classId], (err, result) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send('Có lỗi xảy ra!');
+        } else {
+            console.log(result);
+            res.json(result);
+        }
+    });
+});
+
 
 router.get('/thong-tin', (req, res) => {
     db.query('SELECT * FROM thongtin', (err, result) => {
@@ -85,30 +114,10 @@ router.get('/phieuDK', (req, res) => {
     });
 });
 
-
 router.get('/tre-em', (req, res) => {
     const query = `
-        SELECT em.*, l.Ten_lop, sk.Suc_khoe
-        FROM treem em 
-        LEFT JOIN lop l ON em.Lop_id = l.id
-        LEFT JOIN suckhoe sk ON em.SK_id = sk.id
-    `;
-    db.query(query, (err, result) => {
-        if (err) {
-            console.log(err);
-            res.status(500).send('Có lỗi xảy ra!');
-        } else {
-            console.log(result);
-            res.json(result);
-        }
-    });
-});
-
-router.get('/lop-giao-vien', (req, res) => {
-    const query = `
-        SELECT nv.*, l.id as id_lop
-        FROM nhanvien nv 
-        LEFT JOIN lop l ON nv.Lop_id = l.id
+        SELECT *
+        FROM treem
     `;
     db.query(query, (err, result) => {
         if (err) {
@@ -139,6 +148,30 @@ router.get('/lop-loai', (req, res) => {
     });
 });
 
+router.get('/tham-gia', (req, res) => {
+    const query = 'SELECT * FROM thamgia';
 
+    db.query(query, (err, result) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send('Có lỗi xảy ra!');
+        }
+        console.log(result);
+        res.json(result);
+    });
+});
+
+router.get('/giang-day', (req, res) => {
+    const query = 'SELECT * FROM giangday';
+
+    db.query(query, (err, result) => {
+        if (err) {
+            console.log(err);
+            res.status(500).send('Có lỗi xảy ra!');
+        }
+        console.log(result);
+        res.json(result);
+    });
+});
 
 module.exports = router;

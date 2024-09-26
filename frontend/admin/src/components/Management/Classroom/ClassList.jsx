@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import ChildInClass from "./ChildInClass";
+import InClass from "./InClass";
 
 import {
     Paper, styled, Pagination, PaginationItem, Button, Grid, Box, Modal,
@@ -65,8 +65,6 @@ export default function ClassList() {
 
 
     const [data, setData] = useState([]);
-    const [child, setChild] = useState([]);
-    const [teachers, setTeachers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 3;
 
@@ -79,23 +77,6 @@ export default function ClassList() {
             })
             .catch(error => {
                 console.error('Error fetching data:', error);
-            });
-
-        fetch('http://localhost:5000/tre-em')
-            .then(response => response.json())
-            .then(data => {
-                setChild(data);
-            })
-            .catch(error => {
-                console.error('Error fetching students:', error);
-            });
-        fetch('http://localhost:5000/lop-giao-vien')
-            .then(response => response.json())
-            .then(data => {
-                setTeachers(data);
-            })
-            .catch(error => {
-                console.error('Error fetching students:', error);
             });
     }, []);
 
@@ -195,9 +176,6 @@ export default function ClassList() {
         if (!result.isConfirmed) return;
 
         try {
-            await axios.put(`http://localhost:5000/cn-id-lop-trong-tre/${id}`);
-            await axios.put(`http://localhost:5000/cn-id-lop-trong-nv/${id}`);
-
             await axios.delete(`http://localhost:5000/lop/${id}`);
             Swal.fire(
                 'Đã xóa!',
@@ -219,16 +197,10 @@ export default function ClassList() {
     const [currentItem, setcurrentItem] = useState({});
     const [open, setopen] = useState(false);
     const [openModal, setOpenModal] = useState(false);
-    const [childClass, setChildClass] = useState([]);
-    const [teacherClass, setTeacherClass] = useState([]);
+    const [currentClassId, setCurrentClassId] = useState(null);
 
     const handleOpenModal = (item) => {
-        const filterChildClass = child.filter(child => child.Lop_id === item.id);
-        console.log(filterChildClass);
-        setChildClass(filterChildClass);
-
-        const filterTeacherClass = teachers.filter(teachers => teachers.Lop_id === item.id);
-        setTeacherClass(filterTeacherClass);
+        setCurrentClassId(item.id);
         setOpenModal(true);
     };
 
@@ -400,11 +372,10 @@ export default function ClassList() {
                 renderItem={(item) => <CustomPaginationItem {...item} />}
             />
 
-            <ChildInClass
+            <InClass
                 open={openModal}
                 handleClose={handleCloseModal}
-                children={childClass}
-                teachers={teacherClass}
+                classId={currentClassId}
             />
 
             <Modal open={open} onClose={handleClose}

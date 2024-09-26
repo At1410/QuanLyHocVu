@@ -75,15 +75,35 @@ router.delete('/phu-huynh/:id', (req, res) => {
     });
 });
 
-router.delete('/suc-khoe/:id', (req, res) => {
-    const { id } = req.params;
-    const sql = 'DELETE FROM suckhoe WHERE id = ?';
+router.delete('/tham-gia/:id_lop/:id_treem', (req, res) => {
+    const { id_lop, id_treem } = req.params;
 
-    db.query(sql, [id], (err, result) => {
+    const sql = 'DELETE FROM thamgia WHERE id_lop = ? AND id_treem = ?';
+
+    db.query(sql, [id_lop, id_treem], (err, result) => {
+
         if (err) {
-            return res.status(500).send(err);
+            console.error('Có lỗi xảy ra:', err);
+            return res.status(500).json({ message: 'Có lỗi xảy ra khi xóa dữ liệu', error: err });
         }
-        res.send(`Deleted record with ID: ${id}`);
+
+        res.status(200).json({ message: 'Xóa thành công!' });
+    });
+});
+
+router.delete('/giang-day/:id_Lop/:id_GV', (req, res) => {
+    const { id_Lop, id_GV } = req.params;
+
+    const sql = 'DELETE FROM giangday WHERE id_Lop = ? AND id_GV = ?';
+
+    db.query(sql, [id_Lop, id_GV], (err, result) => {
+
+        if (err) {
+            console.error('Có lỗi xảy ra:', err);
+            return res.status(500).json({ message: 'Có lỗi xảy ra khi xóa dữ liệu', error: err });
+        }
+
+        res.status(200).json({ message: 'Xóa thành công!' });
     });
 });
 

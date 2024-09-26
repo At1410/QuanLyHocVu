@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 import { Modal, TextField, Box, Button, FormHelperText, FormLabel, RadioGroup, FormControlLabel, Radio, FormControl } from '@mui/material';
 import axios from "axios";
 
-export default function CreateClass() {
+export default function CreateClass({ open, setOpen }) {
 
     const [formData, setFormData] = useState({
         Ten_lop: '',
@@ -33,9 +33,6 @@ export default function CreateClass() {
         return Object.values(tempErrors).every(x => x === "");
     };
 
-    const [open, setOpen] = useState(false);
-
-    const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
     const handleSubmit = async (e) => {
@@ -79,8 +76,6 @@ export default function CreateClass() {
 
     return (
         <div>
-            <Button variant="contained"
-                onClick={handleOpen}>Tạo lớp</Button>
             <Modal open={open} onClose={handleClose}
                 sx={{
                     display: 'flex',

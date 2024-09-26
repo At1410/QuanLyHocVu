@@ -26,16 +26,18 @@ app.post('/thong-tin', routesPost);
 app.post('/nhan-vien', routesPost);
 app.post('/treem-phuhuynh', routesPost);
 app.post('/lop', routesPost);
+app.post('/them-tre/:id_lop/:id_treem', routesPost);
+app.post('/giang-day/:id_Lop/:id_GV', routesPost);
 
 app.put('/thong-tin/:id', routesPut);
 app.put('/nhan-vien/:id', routesPut);
 app.put('/lop/:id', routesPut);
 app.put('/trang-thai/:id', routesPut);
 app.put('/danh_dau/:id', routesPut);
+app.put('/tre-em/:id', routesPut);
+app.put('/phu-huynh/:id', routesPut);
 app.put('/trang-thai-tre/:id', routesPut);
 app.put('/trang-thai-lop/:id', routesPut);
-app.put('cn-id-lop-trong-tre/:id', routesPut);
-app.put('cn-id-lop-trong-nv/:id', routesPut);
 
 
 app.delete('/thong-tin/:id', routesDelete);
@@ -44,7 +46,8 @@ app.delete('/phieuDK/:id', routesDelete);
 app.delete('/lop/:id', routesDelete);
 app.delete('/tre-em/:id', routesDelete);
 app.delete('/phu-huynh/:id', routesDelete);
-app.delete('/suc-khoe/:id', routesDelete);
+app.delete('/tham-gia/:id_lop/:id_treem', routesDelete);
+app.delete('/giang-day/:id_Lop/:id_GV', routesDelete);
 
 
 // Cấu hình port và khởi động server

@@ -1,19 +1,14 @@
-import React, { useState } from 'react';
-
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import Swal from 'sweetalert2';
+import React, { useEffect, useState } from 'react';
 
 import {
     styled, Paper, Table,
     TableCell, TableContainer, TableHead, TableRow,
     Modal, Box,
     Typography,
-    Button
+    Pagination, PaginationItem
 } from "@mui/material";
 
-import axios from 'axios';
-
-export default function ChildInClass({ open, handleClose, children, teachers }) {
+export default function InClass({ open, handleClose, classId }) {
 
     //Style
     const StylesTableCell = styled(TableCell)({
@@ -29,17 +24,52 @@ export default function ChildInClass({ open, handleClose, children, teachers }) 
         paddingBottom: 5,
     })
 
-    const StyleButton = styled(Button)({
-        backgroundColor: '#89b847',
-        color: '#ffffff',
-        paddingTop: 5,
-        paddingBottom: 5,
-        float: 'right',
-        '&:hover': {
-            backgroundColor: '#89b847',
-            color: '#ffffff',
-        },
-    })
+    const [dataTG, setDataTG] = useState([]);
+    const [dataGD, setDataGD] = useState([]);
+    const [children, setChildren] = useState([]);
+    const [teachers, setTeachers] = useState([]);
+
+    useEffect(() => {
+        fetch('http://localhost:5000/tham-gia')
+            .then(response => response.json())
+            .then(data => {
+                setDataTG(data);
+            })
+            .catch(error => {
+                console.error('Error fetching students:', error);
+            });
+        fetch('http://localhost:5000/giang-day')
+            .then(response => response.json())
+            .then(data => {
+                setDataGD(data);
+            })
+            .catch(error => {
+                console.error('Error fetching students:', error);
+            });
+        fetch('http://localhost:5000/tre-em')
+            .then(response => response.json())
+            .then(data => {
+                setChildren(data);
+            })
+            .catch(error => {
+                console.error('Error fetching students:', error);
+            });
+        fetch('http://localhost:5000/giao-vien')
+            .then(response => response.json())
+            .then(data => {
+                setTeachers(data);
+            })
+            .catch(error => {
+                console.error('Error fetching students:', error);
+            });
+    }, []);
+
+    const childrenInClass = dataTG.filter(item => item.id_lop === classId).map(item => item.id_treem);
+    const teachersInClass = dataGD.filter(item => item.id_Lop === classId).map(item => item.id_GV);
+
+    const filteredChildren = children.filter(child => childrenInClass.includes(child.id));
+    const filteredTeachers = teachers.filter(teacher => teachersInClass.includes(teacher.id));
+
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -57,46 +87,23 @@ export default function ChildInClass({ open, handleClose, children, teachers }) 
         }
     };
 
-    const [data, setData] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsTableChild = 2;
+    const indexOfLastItemChild = currentPage * itemsTableChild;
+    const indexOfFirstItemChild = indexOfLastItemChild - itemsTableChild;
 
-    const handelNullIdClass = async (id) => {
-        try {
-            const result = await Swal.fire({
-                title: 'Bạn có chắc chắn không?',
-                text: 'Bạn có chắc chắn rằng lớp học đã hoàn thành hay không!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Có',
-                cancelButtonText: 'Hủy'
-            });
+    const currentChildrenTable = filteredChildren.slice(indexOfFirstItemChild, indexOfLastItemChild);
 
-            if (!result.isConfirmed) return;
+    const CustomPaginationItem = styled(PaginationItem)(({ theme }) => ({
+        '&.Mui-selected': {
+            backgroundColor: '#89b847',
+            color: 'white',
+        },
+    }));
 
-            await axios.put(`http://localhost:5000/ID-lop/${id}`, { Lop_id: null });
-
-            setData((prevData) =>
-                prevData.map((item) =>
-                    item.id === id ? { ...item, Lop_id: null } : item
-                )
-            );
-
-            Swal.fire(
-                'Đã hoàn thành!',
-                'Xóa trẻ ra khỏi lớp!',
-                'success'
-            );
-
-        } catch (error) {
-            console.error('Có lỗi xảy ra:', error);
-            Swal.fire(
-                'Lỗi!',
-                'Có lỗi xảy ra khi cập nhật dữ liệu.',
-                'error'
-            );
-        }
-    }
+    const handlePageChange = (event, page) => {
+        setCurrentPage(page);
+    };
 
     return (
         <Modal
@@ -128,7 +135,6 @@ export default function ChildInClass({ open, handleClose, children, teachers }) 
                         fontWeight: 'bold',
                     }}>
                     DANH SÁCH HỌC SINH CỦA LỚP
-                    <StyleButton>Thêm trẻ</StyleButton>
                 </Typography>
                 <TableContainer component={Paper} sx={{
                     width: '100%',
@@ -140,37 +146,16 @@ export default function ChildInClass({ open, handleClose, children, teachers }) 
                                 <StylesTableCell>Ngày sinh trẻ</StylesTableCell>
                                 <StylesTableCell>Giới tính</StylesTableCell>
                                 <StylesTableCell>Sức khỏe</StylesTableCell>
-                                <StylesTableCell sx={{
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                }}>
-                                    Thao tác
-                                </StylesTableCell>
                             </TableRow>
                         </TableHead>
 
-                        {children.length > 0 ? (
-                            children.map((item) => (
+                        {currentChildrenTable.length > 0 ? (
+                            currentChildrenTable.map((item) => (
                                 <TableRow key={item.id}>
                                     <StylesTableCellCt>{item.Ten_tre}</StylesTableCellCt>
                                     <StylesTableCellCt>{formatDate(item.Ngay_sinh)}</StylesTableCellCt>
                                     <StylesTableCellCt>{Gender(item.Gioi_tinh)}</StylesTableCellCt>
                                     <StylesTableCellCt>{item.Suc_khoe}</StylesTableCellCt>
-                                    <StylesTableCellCt sx={{
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                    }}>
-                                        <RemoveCircleOutlineIcon
-                                            onClick={() => handelNullIdClass(item.id)}
-                                            sx={{
-                                                color: '#89b847',
-                                                cursor: 'pointer',
-                                                alignItems: 'center',
-                                                '&:hover': { color: '#d00000' },
-                                            }} />
-                                    </StylesTableCellCt>
                                 </TableRow>
                             ))
                         ) : (
@@ -181,13 +166,25 @@ export default function ChildInClass({ open, handleClose, children, teachers }) 
                             </TableRow>
                         )}
                     </Table>
+                    <Pagination
+                        count={Math.ceil(filteredChildren.length / itemsTableChild)}
+                        page={currentPage}
+                        onChange={handlePageChange}
+                        sx={{
+                            marginTop: 1,
+                            marginBottom: 1,
+                            justifyContent: 'center',
+                            display: 'flex',
+                            color: '#89b847'
+                        }}
+                        renderItem={(item) => <CustomPaginationItem {...item} />}
+                    />
                 </TableContainer>
                 <Typography
                     sx={{
                         fontWeight: 'bold',
                     }}>
                     DANH SÁCH GIÁO VIÊN CỦA LỚP
-                    <StyleButton>Thêm giáo viên</StyleButton>
                 </Typography>
                 <TableContainer component={Paper} sx={{
                     width: '100%'
@@ -200,37 +197,16 @@ export default function ChildInClass({ open, handleClose, children, teachers }) 
                                 <StylesTableCell>Căn cước công dân</StylesTableCell>
                                 <StylesTableCell>Giới tính</StylesTableCell>
                                 <StylesTableCell>Số điện thoại</StylesTableCell>
-                                <StylesTableCell sx={{
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                }}>
-                                    Thao tác
-                                </StylesTableCell>
                             </TableRow>
                         </TableHead>
 
-                        {teachers.length > 0 ? (
-                            teachers.map((item) => (
+                        {filteredTeachers.length > 0 ? (
+                            filteredTeachers.map((item) => (
                                 <TableRow key={item.id}>
                                     <StylesTableCellCt>{item.Ten_Nhan_Vien}</StylesTableCellCt>
                                     <StylesTableCellCt>{item.CMND}</StylesTableCellCt>
                                     <StylesTableCellCt>{Gender(item.Gioi_tinh)}</StylesTableCellCt>
                                     <StylesTableCellCt>{item.Sdt}</StylesTableCellCt>
-                                    <StylesTableCellCt sx={{
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                    }}>
-                                        <RemoveCircleOutlineIcon
-                                            onClick={() => handelNullIdClass(item.id)}
-                                            sx={{
-                                                color: '#89b847',
-                                                cursor: 'pointer',
-                                                alignItems: 'center',
-                                                '&:hover': { color: '#d00000' },
-                                            }} />
-                                    </StylesTableCellCt>
                                 </TableRow>
                             ))
                         ) : (

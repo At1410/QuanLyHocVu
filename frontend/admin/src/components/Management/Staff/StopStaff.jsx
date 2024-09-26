@@ -4,7 +4,6 @@ import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 
-import BG from "../../../img/Background.png";
 import { Pagination, PaginationItem } from '@mui/material';
 
 function StopStaff() {

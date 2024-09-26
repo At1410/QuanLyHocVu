@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, styled, Pagination, PaginationItem, Grid } from '@mui/material';
+import { Paper, styled, Pagination, PaginationItem, Grid } from '@mui/material';
 
 import ReorderIcon from '@mui/icons-material/Reorder';
 import ReplayIcon from '@mui/icons-material/Replay';
@@ -129,7 +129,6 @@ export default function ChildStop() {
         Ten_tre: '',
         Gioi_tinh: '',
         Ngay_sinh: '',
-        Lop_id: '',
         Suc_khoe: '',
     });
 
@@ -139,7 +138,6 @@ export default function ChildStop() {
             Ten_tre: data.Ten_tre,
             Gioi_tinh: data.Gioi_tinh,
             Ngay_sinh: data.Ngay_sinh,
-            Lop_id: data.Ten_lop,
             Suc_khoe: data.Suc_khoe,
         });
 
@@ -194,7 +192,6 @@ export default function ChildStop() {
                                         <p>Tên trẻ: {item.Ten_tre}</p>
                                         <p>Giới tính: {Gender(item.Gioi_tinh)}</p>
                                         <p>Ngày sinh: {formatDate(item.Ngay_sinh)}</p>
-                                        <p>Lớp: {item.Ten_lop}</p>
                                         <p>Sức khỏe: {item.Suc_khoe}</p>
                                     </StyleDivItem>
                                 </Grid>

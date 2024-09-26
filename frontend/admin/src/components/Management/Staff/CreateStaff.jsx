@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-import { Modal, TextField, Box, Button, FormHelperText, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
+import { useDropzone } from 'react-dropzone';
+
+import { Modal, TextField, Box, Button, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 
 import Swal from 'sweetalert2'
@@ -16,7 +18,6 @@ export default function CreateStaff() {
         Que_quan: '',
         Sdt: '',
         CMND: '',
-        Lop_id: null,
         trang_thai: true,
         Chuc_vu_id: '',
     });
@@ -31,21 +32,6 @@ export default function CreateStaff() {
         });
     };
 
-    const validate = () => {
-        let tempErrors = {};
-        tempErrors.Ten_Nhan_Vien = formData.Ten_Nhan_Vien ? "" : "Tên nhân viên là bắt buộc.";
-        tempErrors.Ngay_sinh = formData.Ngay_sinh ? "" : "Ngày sinh là bắt buộc.";
-        tempErrors.Sdt = formData.Sdt ? "" : "Số điện thoại là bắt buộc.";
-        tempErrors.Dia_chi = formData.Dia_chi ? "" : "Địa chỉ là bắt buộc.";
-        tempErrors.Que_quan = formData.Que_quan ? "" : "Quê quán là bắt buộc.";
-        tempErrors.CMND = formData.CMND ? "" : "Số CMND là bắt buộc.";
-        tempErrors.Chuc_vu_id = formData.Chuc_vu_id ? "" : "Chức vụ là bắt buộc.";
-        tempErrors.Gioi_tinh = formData.Gioi_tinh !== null ? "" : "Giới tính là bắt buộc.";
-        setErrors(tempErrors);
-        return Object.values(tempErrors).every(x => x === "");
-    };
-
-
     const [open, setOpen] = useState(false);
 
     const handleOpen = () => setOpen(true);
@@ -55,46 +41,86 @@ export default function CreateStaff() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        console.log('handleSubmit đã được gọi');
 
-        if (validate()) {
-            try {
-                const response = await axios.post('http://localhost:5000/nhan-vien', formData);
-                if (response.data.success) {
-                    handleClose();
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'success',
-                        title: 'Dữ liệu đã được thêm thành công!',
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(() => {
-                        setFormData({
-                            Ten_Nhan_Vien: '',
-                            Ngay_sinh: '',
-                            Dia_chi: '',
-                            Gioi_tinh: null,
-                            Que_quan: '',
-                            Sdt: '',
-                            CMND: '',
-                            trang_thai: true,
-                            Chuc_vu_id: '',
-                            Lop_id: null,
-                        });
-                    });
-                }
-            } catch (error) {
+        const CCCD = /^\d{14}$/;
+        if (!CCCD.test(formData.CMND)) {
+            Swal.fire(
+                'Lỗi!',
+                'CCCD không hợp lệ. Vui lòng nhập lại số CCCD.',
+                'error'
+            );
+            return;
+        }
+
+        const phoneRegex = /^(0[3-9]\d{8}|(0[2-9]\d{7}))$/;
+        if (!phoneRegex.test(formData.Sdt)) {
+            Swal.fire(
+                'Lỗi!',
+                'Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại Việt Nam hợp lệ.',
+                'error'
+            );
+            return;
+        }
+
+        const today = new Date();
+        const birthDate = new Date(formData.Ngay_sinh);
+        if (birthDate >= today) {
+            Swal.fire(
+                'Lỗi!',
+                'Ngày sinh phải trước ngày hôm nay.',
+                'error'
+            );
+            return;
+        }
+
+        if (formData.Ten_Nhan_Vien?.trim() === '' || formData.Ngay_sinh?.trim() === '' ||
+            formData.Dia_chi?.trim() === '' ||
+            formData.Que_quan?.trim() === '' || formData.Sdt?.trim() === '' ||
+            formData.CMND?.trim() === '' || formData.Gioi_tinh === null || formData.Chuc_vu_id === '') {
+            Swal.fire(
+                'Lỗi!',
+                'Vui lòng nhập đầy đủ thông tin.',
+                'error'
+            );
+            return;
+        }
+
+        try {
+            const response = await axios.post('http://localhost:5000/nhan-vien', formData);
+            if (response.data.success) {
                 handleClose();
-                console.error('Lỗi khi thêm dữ liệu:', error);
                 Swal.fire({
-                    position: "center",
-                    icon: "error",
-                    title: "Thêm dữ liệu không thành công!",
+                    position: 'center',
+                    icon: 'success',
+                    title: 'Dữ liệu đã được thêm thành công!',
                     showConfirmButton: false,
                     timer: 1500
+                }).then(() => {
+                    setFormData({
+                        Ten_Nhan_Vien: '',
+                        Ngay_sinh: '',
+                        Dia_chi: '',
+                        Gioi_tinh: null,
+                        Que_quan: '',
+                        Sdt: '',
+                        CMND: '',
+                        trang_thai: true,
+                        Chuc_vu_id: '',
+                    });
                 });
             }
+        } catch (error) {
+            handleClose();
+            console.error('Lỗi khi thêm dữ liệu:', error);
+            Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "Thêm dữ liệu không thành công!",
+                showConfirmButton: false,
+                timer: 1500
+            });
         }
+
     }
 
     return (
@@ -144,8 +170,6 @@ export default function CreateStaff() {
                         variant="outlined"
                         value={formData.Ten_Nhan_Vien}
                         onChange={handleChange}
-                        error={!!errors.Ten_Nhan_Vien}
-                        helperText={errors.Ten_Nhan_Vien}
                     />
 
 
@@ -162,8 +186,6 @@ export default function CreateStaff() {
                             variant="outlined"
                             value={formData.Ngay_sinh}
                             onChange={handleChange}
-                            error={!!errors.Ngay_sinh}
-                            helperText={errors.Ngay_sinh}
                         />
 
                         <TextField
@@ -175,8 +197,6 @@ export default function CreateStaff() {
                             variant="outlined"
                             value={formData.Sdt}
                             onChange={handleChange}
-                            error={!!errors.Sdt}
-                            helperText={errors.Sdt}
                         />
                     </div>
 
@@ -191,11 +211,9 @@ export default function CreateStaff() {
                             variant="outlined"
                             value={formData.CMND}
                             onChange={handleChange}
-                            error={!!errors.CMND}
-                            helperText={errors.CMND}
                         />
 
-                        <FormControl fullWidth size="small" sx={{ marginLeft: '10px' }} error={!!errors.Chuc_vu_id}>
+                        <FormControl fullWidth size="small" sx={{ marginLeft: '10px' }}>
                             <InputLabel id="demo-simple-select-label">Chức vụ</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
@@ -210,7 +228,6 @@ export default function CreateStaff() {
                                 <MenuItem value={3}>Ý tá</MenuItem>
                                 <MenuItem value={4}>Lao công</MenuItem>
                             </Select>
-                            <FormHelperText>{errors.Chuc_vu_id}</FormHelperText>
                         </FormControl>
                     </div>
 
@@ -222,8 +239,6 @@ export default function CreateStaff() {
                         variant="outlined"
                         value={formData.Dia_chi}
                         onChange={handleChange}
-                        error={!!errors.Dia_chi}
-                        helperText={errors.Dia_chi}
                     />
 
                     <TextField
@@ -234,16 +249,12 @@ export default function CreateStaff() {
                         variant="outlined"
                         value={formData.Que_quan}
                         onChange={handleChange}
-                        error={!!errors.Que_quan}
-                        helperText={errors.Que_quan}
                     />
-
 
                     <FormControl fullWidth size="small"
                         sx={{
                             marginLeft: '10px',
                         }}
-                        error={!!errors.Gioi_tinh}
                     >
                         <FormLabel component="legend">Giới tính*</FormLabel>
                         <RadioGroup
@@ -256,8 +267,6 @@ export default function CreateStaff() {
                             <FormControlLabel value={0} control={<Radio />} label="Nữ" />
                             <FormControlLabel value={1} control={<Radio />} label="Nam" />
                         </RadioGroup>
-
-                        <FormHelperText>{errors.Gioi_tinh}</FormHelperText>
                     </FormControl>
 
                     <Button variant="contained" type="submit" onClick={handleSubmit}

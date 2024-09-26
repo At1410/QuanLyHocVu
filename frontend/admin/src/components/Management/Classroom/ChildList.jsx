@@ -2,7 +2,14 @@ import React, { useEffect, useState } from "react";
 
 
 import {
-    Paper, styled, Pagination, PaginationItem, Grid, Box, Modal
+    Paper, styled, Pagination, PaginationItem, Grid, Box, Modal,
+    TextField,
+    Button,
+    FormLabel,
+    RadioGroup,
+    FormControlLabel,
+    Radio,
+    FormControl,
 } from '@mui/material';
 
 
@@ -116,10 +123,16 @@ export default function ChildList() {
 
     const [childList, setChildList] = useState({
         Ten_tre: '',
-        Gioi_tinh: '',
         Ngay_sinh: '',
-        Lop_id: '',
         Suc_khoe: '',
+        Gioi_tinh: '',
+    });
+
+    const [childParent, setChildParent] = useState({
+        Ten_PH: '',
+        Dia_Chi: '',
+        Sdt: '',
+        Quan_he: '',
     });
 
     const handleTick = async (id, Trang_thai) => {
@@ -128,7 +141,6 @@ export default function ChildList() {
             Ten_tre: data.Ten_tre,
             Gioi_tinh: data.Gioi_tinh,
             Ngay_sinh: data.Ngay_sinh,
-            Lop_id: data.Ten_lop,
             Suc_khoe: data.Suc_khoe,
         });
 
@@ -191,8 +203,6 @@ export default function ChildList() {
 
             await axios.delete(`http://localhost:5000/phu-huynh/${item.PH_id}`);
 
-            await axios.delete(`http://localhost:5000/suc-khoe/${item.SK_id}`);
-
             setData(data.filter(tem => tem.id !== item.id));
 
             Swal.fire(
@@ -212,36 +222,51 @@ export default function ChildList() {
     };
 
     const [currentItem, setcurrentItem] = useState({});
-    const [open, setopen] = useState(false);
 
-    const handleClose = () => {
-        setopen(false);
-    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setChildList(prevState => ({
-            ...prevState,
-            [name]: value
-        }));
+
+        if (['Ten_tre', 'Ngay_sinh', 'Suc_khoe', 'Gioi_tinh'].includes(name)) {
+            setChildList(prevState => ({
+                ...prevState,
+                [name]: value
+            }));
+        }
+
+        if (['Ten_PH', 'Dia_Chi', 'Sdt', 'Quan_he'].includes(name)) {
+            setChildParent(prevState => ({
+                ...prevState,
+                [name]: value
+            }));
+        }
     };
 
-    const handleEdit = (childList) => {
-        setcurrentItem(childList);
+    const handleEdit = (item) => {
         setChildList({
-            Ten_tre: data.Ten_tre,
-            Gioi_tinh: data.Gioi_tinh,
-            Ngay_sinh: data.Ngay_sinh,
-            Lop_id: data.Ten_lop,
-            Suc_khoe: data.Suc_khoe,
+            Ten_tre: item.Ten_tre,
+            Gioi_tinh: item.Gioi_tinh,
+            Ngay_sinh: formatDate(item.Ngay_sinh),
+            Suc_khoe: item.Suc_khoe,
         });
-        setopen(true);
+        const parentInfo = parent.find(p => p.id_PH === item.PH_id);
+        setChildParent({
+            Ten_PH: parentInfo.Ten_PH,
+            Dia_Chi: parentInfo.Dia_Chi,
+            Sdt: parentInfo.Sdt,
+            Quan_he: parentInfo.Quan_he,
+        });
+        setcurrentItem(item);
+        handleOpenEditModal(item);
     };
 
     const handleSave = async () => {
-        if (childList.Ten_tre?.trim() === '' || childList.Gioi_tinh?.trim() === '' ||
+
+        if (childList.Ten_tre?.trim() === '' || childList.Suc_khoe?.trim() === '' ||
             childList.Ngay_sinh?.trim() === '' || childList.Lop_id?.trim() === '' ||
-            childList.Suc_khoe?.trim() === '') {
+            childParent.Ten_PH?.trim() === '' ||
+            childParent.Dia_Chi?.trim() === '' || childParent.Sdt?.trim() === '' ||
+            childParent.Quan_he?.trim() === '') {
             Swal.fire(
                 'Lỗi!',
                 'Vui lòng nhập đầy đủ thông tin.',
@@ -250,22 +275,45 @@ export default function ChildList() {
             return;
         }
 
+        const phoneRegex = /^(0[3-9]\d{8}|(0[2-9]\d{7}))$/;
+        if (!phoneRegex.test(childParent.Sdt)) {
+            Swal.fire(
+                'Lỗi!',
+                'Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại Việt Nam hợp lệ.',
+                'error'
+            );
+            return;
+        }
+
+        const today = new Date();
+        if (childList.Ngay_sinh && new Date(childList.Ngay_sinh) >= today) {
+            return Swal.fire('Lỗi!', 'Ngày sinh phải trước ngày hôm nay.', 'error');
+        }
+
         try {
             const payload = {
-                Ten_tre: data.Ten_tre,
-                Gioi_tinh: data.Gioi_tinh,
-                Ngay_sinh: data.Ngay_sinh,
-                Lop_id: data.Ten_lop,
-                Suc_khoe: data.Suc_khoe,
+                Ten_tre: childList.Ten_tre,
+                Gioi_tinh: childList.Gioi_tinh,
+                Ngay_sinh: childList.Ngay_sinh,
+                Suc_khoe: childList.Suc_khoe,
+            };
+            const parentPayload = {
+                Ten_PH: childParent.Ten_PH,
+                Dia_Chi: childParent.Dia_Chi,
+                Sdt: childParent.Sdt,
+                Quan_he: childParent.Quan_he,
             };
 
             await axios.put(`http://localhost:5000/tre-em/${currentItem.id}`, payload);
+            await axios.put(`http://localhost:5000/phu-huynh/${currentItem.PH_id}`, parentPayload);
 
             setData(data.map(item =>
-                item.id === currentItem.id
-                    ? { ...item, payload } : item
+                item.id === currentItem.id ? { ...item, ...payload } : item
             ));
 
+            setParent(parent.map(item =>
+                item.id_PH === currentItem.PH_id ? { ...item, ...parentPayload } : item
+            ));
 
             Swal.fire(
                 'Đã cập nhật!',
@@ -273,7 +321,7 @@ export default function ChildList() {
                 'success'
             );
 
-            handleClose();
+            handleCloseEditModal();
 
         } catch (error) {
             console.error('Có lỗi xảy ra:', error);
@@ -291,7 +339,6 @@ export default function ChildList() {
 
     const handleOpenModalParents = (item) => {
         const filterParent = parent.filter(parent => parent.id_PH === item.PH_id);
-        console.log(filterParent);
         setParentOf(filterParent);
         setIsModalParentsOpen(true);
     };
@@ -322,7 +369,6 @@ export default function ChildList() {
                                         <p>Tên trẻ: {item.Ten_tre}</p>
                                         <p>Giới tính: {Gender(item.Gioi_tinh)}</p>
                                         <p>Ngày sinh: {formatDate(item.Ngay_sinh)}</p>
-                                        <p>Lớp: {item.Ten_lop}</p>
                                         <p>Sức khỏe: {item.Suc_khoe}</p>
                                     </StyleDivItem>
                                 </Grid>
@@ -344,7 +390,7 @@ export default function ChildList() {
                                             <ReorderIcon />
                                         </StyleButton>
                                         <StyleButton
-                                            onClick={() => handleOpenEditModal(item)}
+                                            onClick={() => handleEdit(item)}
                                             sx={{
                                                 '&:hover': {
                                                     backgroundColor: "#75a73f",
@@ -403,7 +449,9 @@ export default function ChildList() {
 
             <ModalParents open={isModalParentsOpen} handleClose={handleCloseModalParents} parent={ParentOf} />
 
-            <Modal open={isEditModalOpen} onClose={handleCloseEditModal}
+            <Modal
+                open={isEditModalOpen}
+                onClose={handleCloseEditModal}
                 sx={{
                     display: 'flex',
                     justifyContent: 'center',
@@ -423,11 +471,135 @@ export default function ChildList() {
                         backgroundColor: '#f4f6f8',
                         borderRadius: '8px',
                     }}
-                // onSubmit={handleSubmit}
                 >
-                    <h1>Chỉnh sửa thông tin trẻ</h1>
+
+                    <TextField
+                        size="small"
+                        fullWidth
+                        label="Tên phụ huynh*"
+                        name="Ten_PH"
+                        variant="outlined"
+                        value={childParent.Ten_PH}
+                        onChange={handleChange}
+                    />
+
+                    <TextField
+                        size="small"
+                        fullWidth
+                        label="Địa chỉ*"
+                        name="Dia_Chi"
+                        variant="outlined"
+                        value={childParent.Dia_Chi}
+                        onChange={handleChange}
+                    />
+
+                    <div style={{
+                        display: 'flex',
+                    }}>
+
+                        <TextField
+                            size="small"
+                            fullWidth
+                            label="Số điện thoại*"
+                            name="Sdt"
+                            variant="outlined"
+                            value={childParent.Sdt}
+                            onChange={handleChange}
+                            sx={{
+                                marginRight: '5px',
+                            }}
+                        />
+
+                        <TextField
+                            size="small"
+                            fullWidth
+                            label="Quan hệ với trẻ*"
+                            name="Quan_he"
+                            variant="outlined"
+                            value={childParent.Quan_he}
+                            onChange={handleChange}
+                            sx={{
+                                marginLeft: '5px',
+                            }}
+                        />
+
+                    </div>
+
+                    <TextField
+                        size="small"
+                        fullWidth
+                        label="Tên trẻ*"
+                        name="Ten_tre"
+                        variant="outlined"
+                        value={childList.Ten_tre}
+                        onChange={handleChange}
+                    />
+
+                    <div style={{
+                        display: 'flex',
+                    }}>
+                        <TextField
+                            size="small"
+                            fullWidth
+                            label="Ngày sinh trẻ*"
+                            name="Ngay_sinh"
+                            type="date"
+                            InputLabelProps={{ shrink: true }}
+                            variant="outlined"
+                            value={childList.Ngay_sinh}
+                            onChange={handleChange}
+                            sx={{
+                                marginRight: '5px',
+                            }}
+                        />
+
+                        <TextField
+                            size="small"
+                            fullWidth
+                            label="Tình trang sức khỏe*"
+                            name="Suc_khoe"
+                            variant="outlined"
+                            value={childList.Suc_khoe}
+                            onChange={handleChange}
+                            sx={{
+                                marginLeft: '5px',
+                            }}
+                        />
+                    </div>
+
+                    <FormControl fullWidth size="small"
+                        sx={{
+                            marginLeft: '10px',
+                        }}
+                    >
+                        <FormLabel component="legend">Giới tính</FormLabel>
+                        <RadioGroup
+                            aria-label="Giới tính*"
+                            name="Gioi_tinh"
+                            value={childList.Gioi_tinh}
+                            onChange={handleChange}
+                            sx={{ display: 'flex', flexDirection: 'row' }}
+                        >
+                            <FormControlLabel value={0} control={<Radio />} label="Nữ" />
+                            <FormControlLabel value={1} control={<Radio />} label="Nam" />
+                        </RadioGroup>
+                    </FormControl>
+
+                    <Button variant="contained"
+                        onClick={handleSave}
+                        sx={{
+                            backgroundColor: '#89b847',
+                            '&:hover': {
+                                backgroundColor: '#75a73f',
+                                cursor: 'pointer'
+                            },
+                        }}
+                    >
+                        Lưu
+                    </Button>
                 </Box>
             </Modal>
+
         </div >
     );
 }

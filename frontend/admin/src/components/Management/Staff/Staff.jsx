@@ -13,7 +13,7 @@ import BlockIcon from '@mui/icons-material/Block';
 import { Modal, TextField, Box, Button, FormLabel, RadioGroup, FormControlLabel, Radio, Pagination, PaginationItem } from '@mui/material';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 
-function Staff({ searchQuery }) {
+function Staff() {
     //Style
     const Item = styled(Paper)(({ theme }) => ({
         backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -305,7 +305,7 @@ function Staff({ searchQuery }) {
                                 </Grid>
                                 <Grid item xs={6}>
                                     <StyleDivItem>
-                                        <p>Tên Giáo Viên: {item.Ten_Nhan_Vien}</p>
+                                        <p>Tên Nhân Viên: {item.Ten_Nhan_Vien}</p>
                                         <p>Ngày sinh: {formatDate(item.Ngay_sinh)}</p>
                                         <p>Giới tính: {Gender(item.Gioi_tinh)}</p>
                                         <p>Địa chỉ: {item.Dia_chi}</p>

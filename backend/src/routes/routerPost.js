@@ -29,11 +29,11 @@ router.post('/thong-tin', (req, res) => {
 });
 
 router.post('/nhan-vien', (req, res) => {
-    const { Ten_Nhan_Vien, Ngay_sinh, Dia_chi, Gioi_tinh, Que_quan, Sdt, CMND, Chuc_vu_id, Lop_id, trang_thai } = req.body;
+    const { Ten_Nhan_Vien, Ngay_sinh, Dia_chi, Gioi_tinh, Que_quan, Sdt, CMND, Chuc_vu_id, trang_thai } = req.body;
 
-    const payload = [Ten_Nhan_Vien, Ngay_sinh, Dia_chi, Gioi_tinh, Que_quan, Sdt, CMND, Chuc_vu_id, Lop_id, trang_thai];
+    const payload = [Ten_Nhan_Vien, Ngay_sinh, Dia_chi, Gioi_tinh, Que_quan, Sdt, CMND, Chuc_vu_id, trang_thai];
 
-    const query = 'INSERT INTO nhanvien (Ten_Nhan_Vien, Ngay_sinh, Dia_chi, Gioi_tinh, Que_quan, Sdt, CMND, Chuc_vu_id, Lop_id, trang_thai) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    const query = 'INSERT INTO nhanvien (Ten_Nhan_Vien, Ngay_sinh, Dia_chi, Gioi_tinh, Que_quan, Sdt, CMND, Chuc_vu_id, trang_thai) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
     db.query(query, payload, (err, result) => {
         if (err) {
@@ -47,9 +47,8 @@ router.post('/nhan-vien', (req, res) => {
 router.post('/treem-phuhuynh', (req, res) => {
     const { Ten_PH, Sdt, Dia_chi, Quan_he, Ten_tre, Ngay_sinh, Gioi_tinh, Suc_khoe } = req.body;
 
-    const queryTree = `INSERT INTO treem (Ten_tre, Ngay_sinh, Gioi_tinh) VALUES (?, ?, ?)`;
+    const queryTree = `INSERT INTO treem (Ten_tre, Ngay_sinh, Gioi_tinh, Suc_khoe) VALUES (?, ?, ?, ?)`;
     const queryphuhuynh = `INSERT INTO phuhuynh (Ten_PH, Sdt, Dia_chi, Quan_he) VALUES (?, ?, ?, ?)`;
-    const querySK = `INSERT INTO suckhoe (Suc_khoe) VALUES (?)`;
 
     db.query(queryphuhuynh, [Ten_PH, Sdt, Dia_chi, Quan_he], (err, resultphuhuynh) => {
         if (err) {
@@ -58,36 +57,27 @@ router.post('/treem-phuhuynh', (req, res) => {
 
         const PH_id = resultphuhuynh.insertId;
 
-        db.query(querySK, [Suc_khoe], (err, resultSK) => {
+        db.query(queryTree, [Ten_tre, Ngay_sinh, Gioi_tinh, Suc_khoe], (err, resultTree) => {
             if (err) {
-                return res.status(500).send('Database querySK error:', err);
+                return res.status(500).send('Database queryTree error:', err);
             }
 
-            const SK_id = resultSK.insertId;
+            const treemId = resultTree.insertId;
 
-            db.query(queryTree, [Ten_tre, Ngay_sinh, Gioi_tinh], (err, resultTree) => {
+            const updateQuery = `UPDATE treem SET PH_id = ? WHERE id = ?`;
+
+            db.query(updateQuery, [PH_id, treemId], (err, resultUpdate) => {
                 if (err) {
-                    return res.status(500).send('Database queryTree error:', err);
+                    return res.status(500).send('Database update error:', err);
                 }
 
-                const treemId = resultTree.insertId;
-
-                const updateQuery = `UPDATE treem SET PH_id = ?, SK_id = ? WHERE id = ?`;
-
-                db.query(updateQuery, [PH_id, SK_id, treemId], (err, resultUpdate) => {
-                    if (err) {
-                        return res.status(500).send('Database update error:', err);
+                res.json({
+                    success: true,
+                    data: {
+                        treemResult: resultTree,
+                        phuhuynhResult: resultphuhuynh,
+                        updatedTreem: resultUpdate
                     }
-
-                    res.json({
-                        success: true,
-                        data: {
-                            treemResult: resultTree,
-                            phuhuynhResult: resultphuhuynh,
-                            suckhoeResult: resultSK,
-                            updatedTreem: resultUpdate
-                        }
-                    });
                 });
             });
         });
@@ -95,7 +85,6 @@ router.post('/treem-phuhuynh', (req, res) => {
 });
 
 
-//
 router.post('/lop', (req, res) => {
     const { Ten_lop, Ngay_DB, Ngay_KT, Loai_id } = req.body;
 
@@ -111,5 +100,38 @@ router.post('/lop', (req, res) => {
         res.json({ success: true, data: result });
     });
 });
+
+router.post('/them-tre/:id_lop/:id_treem', (req, res) => {
+    const { id_lop, id_treem } = req.params;
+
+    const payload = [id_lop, id_treem];
+
+    const query = 'INSERT INTO thamgia (id_lop, id_treem) VALUES (?, ?)';
+
+    db.query(query, payload, (err, result) => {
+        if (err) {
+            console.error('Database query error:', err);
+            return res.status(500).json({ success: false, error: err.message });
+        }
+        res.json({ success: true, data: result });
+    });
+});
+
+router.post('/giang-day/:id_Lop/:id_GV', (req, res) => {
+    const { id_Lop, id_GV } = req.params;
+
+    const payload = [id_Lop, id_GV];
+
+    const query = 'INSERT INTO giangday (id_Lop, id_GV) VALUES (?, ?)';
+
+    db.query(query, payload, (err, result) => {
+        if (err) {
+            console.error('Database query error:', err);
+            return res.status(500).json({ success: false, error: err.message });
+        }
+        res.json({ success: true, data: result });
+    });
+});
+
 
 module.exports = router;

@@ -5,7 +5,7 @@ import { Modal, TextField, Box, Button, FormHelperText, FormLabel, RadioGroup, F
 import axios from "axios";
 
 
-export default function AppChild() {
+export default function AppChild({ open, setOpen }) {
 
     const [formData, setFormData] = useState({
         Ten_tre: '',
@@ -28,72 +28,84 @@ export default function AppChild() {
         });
     };
 
-    const validate = () => {
-        let tempErrors = {};
-        tempErrors.Ten_tre = formData.Ten_tre ? "" : "Tên trẻ là bắt buộc.";
-        tempErrors.Ngay_sinh = formData.Ngay_sinh ? "" : "Ngày sinh trẻ là bắt buộc.";
-        tempErrors.Suc_khoe = formData.Suc_khoe ? "" : "Tình trang sức khỏe của trẻ là bắt buộc.";
-        tempErrors.Sdt = formData.Sdt ? "" : "Số điện thoại phụ huynh là bắt buộc.";
-        tempErrors.Dia_chi = formData.Dia_chi ? "" : "Địa chỉ phụ huynh là bắt buộc.";
-        tempErrors.Quan_he = formData.Quan_he ? "" : "Quan hệ với trẻ là bắt buộc.";
-        tempErrors.Ten_PH = formData.Ten_PH ? "" : "Tên phụ huynh là bắt buộc.";
-        tempErrors.Gioi_tinh = formData.Gioi_tinh !== null ? "" : "Giới tính của trẻ là bắt buộc.";
-        setErrors(tempErrors);
-        return Object.values(tempErrors).every(x => x === "");
-    };
-
-    const [open, setOpen] = useState(false);
-
-    const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        console.log('Dữ liệu gửi đi:', formData);
+        const phoneRegex = /^(0[3-9]\d{8}|(0[2-9]\d{7}))$/;
+        if (!phoneRegex.test(formData.Sdt)) {
+            Swal.fire(
+                'Lỗi!',
+                'Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại Việt Nam hợp lệ.',
+                'error'
+            );
+            return;
+        }
 
-        if (validate()) {
-            try {
-                const response = await axios.post('http://localhost:5000/treem-phuhuynh', formData);
-                if (response.data.success) {
-                    handleClose();
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'success',
-                        title: 'Dữ liệu đã được thêm thành công!',
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(() => {
-                        setFormData({
-                            Ten_tre: '',
-                            Ngay_sinh: '',
-                            Gioi_tinh: null,
-                            Ten_PH: '',
-                            Sdt: '',
-                            Dia_chi: '',
-                            Quan_he: '',
-                            Suc_khoe: '',
-                        });
-                    });
-                }
-            } catch (error) {
+        const today = new Date();
+        const birthDate = new Date(formData.Ngay_sinh);
+        if (birthDate >= today) {
+            Swal.fire(
+                'Lỗi!',
+                'Ngày sinh phải trước ngày hôm nay.',
+                'error'
+            );
+            return;
+        }
+
+        if (formData.Ten_PH?.trim() === '' || formData.Ngay_sinh?.trim() === '' ||
+            formData.Dia_chi?.trim() === '' ||
+            formData.Quan_he?.trim() === '' || formData.Sdt?.trim() === '' ||
+            formData.Ten_tre?.trim() === '' || formData.Gioi_tinh === null || formData.Suc_khoe === '') {
+            Swal.fire(
+                'Lỗi!',
+                'Vui lòng nhập đầy đủ thông tin.',
+                'error'
+            );
+            return;
+        }
+
+
+
+        try {
+            const response = await axios.post('http://localhost:5000/treem-phuhuynh', formData);
+            if (response.data.success) {
                 handleClose();
-                console.error('Lỗi khi thêm dữ liệu:', error);
                 Swal.fire({
-                    position: "center",
-                    icon: "error",
-                    title: "Thêm dữ liệu không thành công!",
+                    position: 'center',
+                    icon: 'success',
+                    title: 'Dữ liệu đã được thêm thành công!',
                     showConfirmButton: false,
                     timer: 1500
+                }).then(() => {
+                    setFormData({
+                        Ten_tre: '',
+                        Ngay_sinh: '',
+                        Gioi_tinh: null,
+                        Ten_PH: '',
+                        Sdt: '',
+                        Dia_chi: '',
+                        Quan_he: '',
+                        Suc_khoe: '',
+                    });
                 });
             }
+        } catch (error) {
+            handleClose();
+            console.error('Lỗi khi thêm dữ liệu:', error);
+            Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "Thêm dữ liệu không thành công!",
+                showConfirmButton: false,
+                timer: 1500
+            });
         }
     }
 
     return (
         <div>
-            <Button variant="contained"
-                onClick={handleOpen}>Thêm học sinh</Button>
             <Modal open={open} onClose={handleClose}
                 sx={{
                     display: 'flex',
@@ -125,8 +137,6 @@ export default function AppChild() {
                         variant="outlined"
                         value={formData.Ten_PH}
                         onChange={handleChange}
-                        error={!!errors.Ten_PH}
-                        helperText={errors.Ten_PH}
                     />
 
                     <TextField
@@ -137,8 +147,6 @@ export default function AppChild() {
                         variant="outlined"
                         value={formData.Dia_chi}
                         onChange={handleChange}
-                        error={!!errors.Dia_chi}
-                        helperText={errors.Dia_chi}
                     />
 
                     <div style={{
@@ -153,8 +161,6 @@ export default function AppChild() {
                             variant="outlined"
                             value={formData.Sdt}
                             onChange={handleChange}
-                            error={!!errors.Sdt}
-                            helperText={errors.Sdt}
                             sx={{
                                 marginRight: '5px',
                             }}
@@ -168,8 +174,6 @@ export default function AppChild() {
                             variant="outlined"
                             value={formData.Quan_he}
                             onChange={handleChange}
-                            error={!!errors.Quan_he}
-                            helperText={errors.Quan_he}
                             sx={{
                                 marginLeft: '5px',
                             }}
@@ -185,8 +189,6 @@ export default function AppChild() {
                         variant="outlined"
                         value={formData.Ten_tre}
                         onChange={handleChange}
-                        error={!!errors.Ten_tre}
-                        helperText={errors.Ten_tre}
                     />
 
                     <div style={{
@@ -202,8 +204,6 @@ export default function AppChild() {
                             variant="outlined"
                             value={formData.Ngay_sinh}
                             onChange={handleChange}
-                            error={!!errors.Ngay_sinh}
-                            helperText={errors.Ngay_sinh}
                             sx={{
                                 marginRight: '5px',
                             }}
@@ -217,8 +217,6 @@ export default function AppChild() {
                             variant="outlined"
                             value={formData.Suc_khoe}
                             onChange={handleChange}
-                            error={!!errors.Suc_khoe}
-                            helperText={errors.Suc_khoe}
                             sx={{
                                 marginLeft: '5px',
                             }}
@@ -229,7 +227,6 @@ export default function AppChild() {
                         sx={{
                             marginLeft: '10px',
                         }}
-                        error={!!errors.Gioi_tinh}
                     >
                         <FormLabel component="legend">Giới tính</FormLabel>
                         <RadioGroup
@@ -243,7 +240,6 @@ export default function AppChild() {
                             <FormControlLabel value={1} control={<Radio />} label="Nam" />
                         </RadioGroup>
 
-                        <FormHelperText>{errors.Gioi_tinh}</FormHelperText>
                     </FormControl>
 
                     <Button variant="contained"
