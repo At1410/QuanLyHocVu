@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import Swal from 'sweetalert2';
-import { Modal, TextField, Box, Button, FormHelperText, FormLabel, RadioGroup, FormControlLabel, Radio, FormControl } from '@mui/material';
+import { Modal, TextField, Box, Button, FormLabel, RadioGroup, FormControlLabel, Radio, FormControl } from '@mui/material';
 import axios from "axios";
 
 
@@ -17,8 +17,6 @@ export default function AppChild({ open, setOpen }) {
         Quan_he: '',
         Suc_khoe: '',
     });
-
-    const [errors, setErrors] = useState({});
 
     const handleChange = (e) => {
         const { name, value } = e.target;

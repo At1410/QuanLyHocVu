@@ -101,6 +101,8 @@ export default function ClassStop() {
         Hoc_phi: '',
     });
 
+    console.log(classList);
+
     const handleTick = async (id, trang_thai) => {
 
         setClassList({

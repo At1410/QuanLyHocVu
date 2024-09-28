@@ -108,6 +108,7 @@ export default function RegistrationForm() {
         Ngay_den_tham: "",
     });
 
+    console.log(parents);
 
     const handleDelete = async (id) => {
         // Hiển thị thông báo xác nhận xóa

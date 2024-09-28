@@ -5,7 +5,6 @@ import { styled, Typography } from '@mui/material';
 export default function HomePage() {
     const StyleImg = styled('img')({
         width: '100%',
-        height: '30rem',
         marginBottom: '10px',
         marginTop: '10px',
     });

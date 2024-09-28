@@ -132,6 +132,8 @@ export default function ChildStop() {
         Suc_khoe: '',
     });
 
+    console.log(childList);
+
     const handleTick = async (id, Trang_thai) => {
 
         setChildList({

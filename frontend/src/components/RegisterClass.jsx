@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Container, Grid, Box, Typography, styled, FormHelperText } from '@mui/material';
+import { TextField, Container, Grid, Box, Typography, styled } from '@mui/material';
 import { FormControl, FormLabel, RadioGroup, Radio, FormControlLabel } from '@mui/material';
 import axios from 'axios';
 import Swal from 'sweetalert2'
@@ -26,21 +26,6 @@ export default function RegisterClass() {
         Buoi: null,
     });
 
-    const [errors, setErrors] = useState({});
-
-    const validate = () => {
-        let tempErrors = {};
-        tempErrors.Ho_ten = formData.Ho_ten ? "" : "Tên phụ huynh là bắt buộc.";
-        tempErrors.Ngay_sinh_tre = formData.Ngay_sinh_tre ? "" : "Ngày sinh của trẻ là bắt buộc.";
-        tempErrors.Sdt = formData.Sdt ? "" : "Số điện thoại phụ huynh là bắt buộc.";
-        tempErrors.Dia_chi = formData.Dia_chi ? "" : "Địa chỉ phụ huynh là bắt buộc.";
-        tempErrors.Ngay_den_tham = formData.Ngay_den_tham ? "" : "Ngày đến tham khảo là bắt buộc.";
-        tempErrors.Buoi = formData.Buoi !== null ? "" : "Buổi đến tham khảo là bắt buộc.";
-        setErrors(tempErrors);
-        return Object.values(tempErrors).every(x => x === "");
-    };
-
-
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -51,36 +36,97 @@ export default function RegisterClass() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (validate()) {
-            setFormData({
-                Ho_ten: '',
-                Ngay_sinh_tre: '',
-                Sdt: '',
-                Dia_chi: '',
-                Ngay_den_tham: '',
-                Buoi: null,
-            });
-            try {
-                const response = await axios.post('http://localhost:5000/dang-ky', formData);
-                if (response.data.success) {
-                    Swal.fire({
-                        position: "center",
-                        icon: "success",
-                        title: "Đăng ký thành công!",
-                        showConfirmButton: false,
-                        timer: 1500
-                    });
+
+        if (formData.Ho_ten?.trim() === '' || formData.Ngay_den_tham?.trim() === '' ||
+            formData.Dia_chi?.trim() === '' ||
+            formData.Sdt?.trim() === '' || formData.Ngay_sinh_tre?.trim() === '' ||
+            formData.Buoi === null) {
+            Swal.fire({
+                title: 'Lỗi!',
+                text: 'Vui lòng nhập đầy đủ thông tin.',
+                icon: 'error',
+                customClass: {
+                    popup: 'swal2-custom-popup',
                 }
-            } catch (error) {
-                console.error('Lỗi khi thêm dữ liệu:', error);
+            });
+            return;
+        }
+
+        const phoneRegex = /^(0[3-9]\d{8}|(0[2-9]\d{7}))$/;
+        if (!phoneRegex.test(formData.Sdt)) {
+            Swal.fire({
+                title: 'Lỗi!',
+                text: 'Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại Việt Nam hợp lệ.',
+                icon: 'error',
+                customClass: {
+                    popup: 'swal2-custom-popup',
+                }
+            });
+            return;
+        }
+
+        const today = new Date();
+        const birthDate = new Date(formData.Ngay_sinh_tre);
+        if (birthDate >= today) {
+            Swal.fire({
+                title: 'Lỗi!',
+                text: 'Ngày sinh phải trước ngày hôm nay.',
+                icon: 'error',
+                customClass: {
+                    popup: 'swal2-custom-popup',
+                }
+            });
+            return;
+        }
+
+        const goDate = new Date(formData.Ngay_den_tham);
+        if (goDate <= today) {
+            Swal.fire({
+                title: 'Lỗi!',
+                text: 'Ngày đến thăm phải sau ngày hôm nay.',
+                icon: 'error',
+                customClass: {
+                    popup: 'swal2-custom-popup',
+                }
+            });
+
+            return;
+        }
+
+        try {
+            const response = await axios.post('http://localhost:5000/dang-ky', formData);
+            if (response.data.success) {
                 Swal.fire({
                     position: "center",
-                    icon: "error",
-                    title: "Đăng ký không thành công!",
+                    icon: "success",
+                    title: "Đăng ký thành công!",
                     showConfirmButton: false,
-                    timer: 1500
+                    timer: 1500,
+                    customClass: {
+                        popup: 'swal2-custom-popup',
+                    }
+                });
+                setFormData({
+                    Ho_ten: '',
+                    Ngay_sinh_tre: '',
+                    Sdt: '',
+                    Dia_chi: '',
+                    Ngay_den_tham: '',
+                    Buoi: null,
                 });
             }
+        } catch (error) {
+            console.error('Lỗi khi thêm dữ liệu:', error);
+            Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "Đăng ký không thành công!",
+                showConfirmButton: false,
+                timer: 1500,
+                customClass: {
+                    popup: 'swal2-custom-popup',
+                }
+            });
         }
     };
 
@@ -106,8 +152,6 @@ export default function RegisterClass() {
                             value={formData.Ho_ten}
                             onChange={handleChange}
                             required
-                            error={!!errors.Ho_ten}
-                            helperText={errors.Ho_ten}
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -122,8 +166,6 @@ export default function RegisterClass() {
                             value={formData.Ngay_sinh_tre}
                             onChange={handleChange}
                             required
-                            error={!!errors.Ngay_sinh_tre}
-                            helperText={errors.Ngay_sinh_tre}
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -136,8 +178,6 @@ export default function RegisterClass() {
                             value={formData.Sdt}
                             onChange={handleChange}
                             required
-                            error={!!errors.Sdt}
-                            helperText={errors.Sdt}
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -150,8 +190,6 @@ export default function RegisterClass() {
                             value={formData.Dia_chi}
                             onChange={handleChange}
                             required
-                            error={!!errors.Dia_chi}
-                            helperText={errors.Dia_chi}
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -166,12 +204,10 @@ export default function RegisterClass() {
                             value={formData.Ngay_den_tham}
                             onChange={handleChange}
                             required
-                            error={!!errors.Ngay_den_tham}
-                            helperText={errors.Ngay_den_tham}
                         />
                     </Grid>
                     <Grid item xs={12}>
-                        <FormControl fullWidth error={!!errors.Buoi}>
+                        <FormControl fullWidth>
                             <FormLabel component="legend">Chọn buổi*</FormLabel>
                             <RadioGroup
                                 aria-label="buoi"
@@ -182,7 +218,7 @@ export default function RegisterClass() {
                                 <FormControlLabel value={0} control={<Radio />} label="Buổi Sáng" />
                                 <FormControlLabel value={1} control={<Radio />} label="Buổi Chiều" />
                             </RadioGroup>
-                            <FormHelperText>{errors.Buoi}</FormHelperText>
+
                         </FormControl>
                     </Grid>
                 </Grid>
@@ -192,6 +228,22 @@ export default function RegisterClass() {
                     </StyleButton>
                 </Box>
             </Box>
+
+
+            <style>
+                {`
+                .swal2-custom-popup {
+                    width: 300px !important;
+                    font-size: 15px !important;
+                }
+
+                @media (max-width: 600px) {
+                    .swal2-custom-popup {
+                        width: 70% !important; /* Kích thước sẽ thay đổi theo tỷ lệ màn hình trên thiết bị di động */
+                    }
+                }
+            `}
+            </style>
         </Container >
     );
 }

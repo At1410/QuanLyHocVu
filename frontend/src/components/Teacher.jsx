@@ -4,6 +4,9 @@ import { styled, Pagination, PaginationItem } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
+
 function Teacher() {
     //Style
     const Item = styled(Paper)(({ theme }) => ({
@@ -26,6 +29,12 @@ function Teacher() {
     const StyleDiv = styled('div')({
         textAlign: 'center',
         marginTop: 90,
+        marginBottom: 20,
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        maxWidth: '1200px',
+        paddingLeft: '15px',
+        paddingRight: '15px',
     });
 
     const StyleImg = styled('img')({
@@ -87,11 +96,18 @@ function Teacher() {
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentData = data.slice(indexOfFirstItem, indexOfLastItem);
 
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     return (
         <StyleDiv>
-            <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                {data.map(item => (
+            <Grid
+                container
+                rowSpacing={1}
+                columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+                direction={isMobile ? 'column' : 'row'}
+            >
+                {currentData.map(item => (
                     <Grid item xs={6} key={`${item.id}-${item.Ten_Nhan_Vien}`}>
                         <Item>
                             <StyleImg src={item.image_nv} alt={item.Ten_Nhan_Vien} />

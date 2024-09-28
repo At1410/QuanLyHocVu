@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-import { useDropzone } from 'react-dropzone';
+import UpdateImg from './UpLoadImg.jsx';
 
 import { Modal, TextField, Box, Button, FormLabel, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
@@ -22,8 +22,6 @@ export default function CreateStaff() {
         Chuc_vu_id: '',
     });
 
-    const [errors, setErrors] = useState({});
-
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -41,6 +39,17 @@ export default function CreateStaff() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        if (formData.Ten_Nhan_Vien?.trim() === '' || formData.Ngay_sinh?.trim() === '' ||
+            formData.Dia_chi?.trim() === '' ||
+            formData.Que_quan?.trim() === '' || formData.Sdt?.trim() === '' ||
+            formData.CMND?.trim() === '' || formData.Gioi_tinh === null || formData.Chuc_vu_id === '') {
+            Swal.fire(
+                'Lỗi!',
+                'Vui lòng nhập đầy đủ thông tin.',
+                'error'
+            );
+            return;
+        }
 
         const CCCD = /^\d{14}$/;
         if (!CCCD.test(formData.CMND)) {
@@ -68,18 +77,6 @@ export default function CreateStaff() {
             Swal.fire(
                 'Lỗi!',
                 'Ngày sinh phải trước ngày hôm nay.',
-                'error'
-            );
-            return;
-        }
-
-        if (formData.Ten_Nhan_Vien?.trim() === '' || formData.Ngay_sinh?.trim() === '' ||
-            formData.Dia_chi?.trim() === '' ||
-            formData.Que_quan?.trim() === '' || formData.Sdt?.trim() === '' ||
-            formData.CMND?.trim() === '' || formData.Gioi_tinh === null || formData.Chuc_vu_id === '') {
-            Swal.fire(
-                'Lỗi!',
-                'Vui lòng nhập đầy đủ thông tin.',
                 'error'
             );
             return;
@@ -172,19 +169,17 @@ export default function CreateStaff() {
                         onChange={handleChange}
                     />
 
-
                     <div style={{
                         display: 'flex',
                     }}>
+
                         <TextField
                             size="small"
                             fullWidth
-                            label="Ngày sinh"
-                            name="Ngay_sinh"
-                            type="date"
-                            InputLabelProps={{ shrink: true }}
+                            label="Số CCCD"
+                            name="CMND"
                             variant="outlined"
-                            value={formData.Ngay_sinh}
+                            value={formData.CMND}
                             onChange={handleChange}
                         />
 
@@ -206,14 +201,43 @@ export default function CreateStaff() {
                         <TextField
                             size="small"
                             fullWidth
-                            label="Số CCCD"
-                            name="CMND"
+                            label="Địa chỉ"
+                            name="Dia_chi"
                             variant="outlined"
-                            value={formData.CMND}
+                            value={formData.Dia_chi}
                             onChange={handleChange}
+                            sx={{ marginTop: 0 }}
                         />
 
-                        <FormControl fullWidth size="small" sx={{ marginLeft: '10px' }}>
+                        <TextField
+                            size="small"
+                            fullWidth
+                            label="Quê quán"
+                            name="Que_quan"
+                            variant="outlined"
+                            value={formData.Que_quan}
+                            onChange={handleChange}
+                            sx={{ marginLeft: '10px' }}
+                        />
+                    </div>
+
+                    <div style={{
+                        display: 'flex',
+                    }}>
+                        <TextField
+                            size="small"
+                            fullWidth
+                            label="Ngày sinh"
+                            name="Ngay_sinh"
+                            type="date"
+                            InputLabelProps={{ shrink: true }}
+                            variant="outlined"
+                            value={formData.Ngay_sinh}
+                            onChange={handleChange}
+                            sx={{ marginTop: '10px' }}
+                        />
+
+                        <FormControl fullWidth size="small" sx={{ marginTop: '10px', marginLeft: '10px' }}>
                             <InputLabel id="demo-simple-select-label">Chức vụ</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
@@ -229,47 +253,30 @@ export default function CreateStaff() {
                                 <MenuItem value={4}>Lao công</MenuItem>
                             </Select>
                         </FormControl>
+
+                        <FormControl fullWidth size="small"
+                            sx={{
+                                marginLeft: '20px',
+                            }}
+                        >
+                            <FormLabel component="legend">Giới tính*</FormLabel>
+                            <RadioGroup
+                                aria-label="Giới tính"
+                                name="Gioi_tinh"
+                                value={formData.Gioi_tinh}
+                                onChange={handleChange}
+                                sx={{ display: 'flex', flexDirection: 'row', marginTop: 0 }}
+                            >
+                                <FormControlLabel value={0} control={<Radio />} label="Nữ" />
+                                <FormControlLabel value={1} control={<Radio />} label="Nam" />
+                            </RadioGroup>
+                        </FormControl>
+
                     </div>
 
-                    <TextField
-                        size="small"
-                        fullWidth
-                        label="Địa chỉ"
-                        name="Dia_chi"
-                        variant="outlined"
-                        value={formData.Dia_chi}
-                        onChange={handleChange}
-                    />
+                    <UpdateImg />
 
-                    <TextField
-                        size="small"
-                        fullWidth
-                        label="Quê quán"
-                        name="Que_quan"
-                        variant="outlined"
-                        value={formData.Que_quan}
-                        onChange={handleChange}
-                    />
-
-                    <FormControl fullWidth size="small"
-                        sx={{
-                            marginLeft: '10px',
-                        }}
-                    >
-                        <FormLabel component="legend">Giới tính*</FormLabel>
-                        <RadioGroup
-                            aria-label="Giới tính"
-                            name="Gioi_tinh"
-                            value={formData.Gioi_tinh}
-                            onChange={handleChange}
-                            sx={{ display: 'flex', flexDirection: 'row' }}
-                        >
-                            <FormControlLabel value={0} control={<Radio />} label="Nữ" />
-                            <FormControlLabel value={1} control={<Radio />} label="Nam" />
-                        </RadioGroup>
-                    </FormControl>
-
-                    <Button variant="contained" type="submit" onClick={handleSubmit}
+                    <Button variant="contained" onClick={handleSubmit}
                         sx={{
                             backgroundColor: '#89b847',
                             '&:hover': {
