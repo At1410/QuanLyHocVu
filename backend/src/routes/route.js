@@ -174,4 +174,62 @@ router.get('/giang-day', (req, res) => {
     });
 });
 
+router.get('/tai-khoan/:idTre', (req, res) => {
+    const { idTre } = req.params;
+    const query = `
+        select em.id, ph.Sdt
+        from babyhouse.treem em 
+        join babyhouse.phuhuynh ph on em.PH_id = ph.id_PH
+        where em.id = ?;
+    `;
+
+    db.query(query, [idTre], (err, result) => {
+        if (err) {
+            console.log("Error:", err);
+            res.status(500).send('Có lỗi xảy ra!');
+        } else {
+            console.log(result);
+            res.json(result);
+        }
+    });
+});
+
+router.get('/dk-nghi-hoc', (req, res) => {
+    const query = `
+        SELECT donnh.*, treem.Ten_tre, treem.Ngay_sinh
+        FROM babyhouse.donnh
+        JOIN babyhouse.treem ON donnh.id_tre = treem.id;
+    `;
+
+    db.query(query, (err, result) => {
+        if (err) {
+            console.log("Error:", err);
+            res.status(500).send('Có lỗi xảy ra!');
+        } else {
+            console.log(result);
+            res.json(result);
+        }
+    });
+});
+
+router.get('/thong-ke', (req, res) => {
+    const query = `
+        select l.Ten_lop, l.Ngay_DB, l.Ngay_KT, tg.id_lop, tg.id_treem
+        from babyhouse.lop l
+        join babyhouse.thamgia tg on l.id = tg.id_lop
+        where l.trang_thai = 1; 
+    `;
+
+    db.query(query, (err, result) => {
+        if (err) {
+            console.log("Error:", err);
+            res.status(500).send('Có lỗi xảy ra!');
+        } else {
+            console.log(result);
+            res.json(result);
+        }
+    });
+});
+
+
 module.exports = router;

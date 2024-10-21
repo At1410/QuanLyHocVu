@@ -5,6 +5,7 @@ import { styled, Typography } from '@mui/material';
 export default function HomePage() {
     const StyleImg = styled('img')({
         width: '100%',
+        height: 'auto',
         marginBottom: '10px',
         marginTop: '10px',
     });
@@ -21,6 +22,8 @@ export default function HomePage() {
                 console.error('Error fetching data:', error);
             });
     }, []);
+
+
 
     return (
         <div style={{ marginTop: 70 }}>

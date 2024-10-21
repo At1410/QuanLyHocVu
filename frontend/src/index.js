@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 const theme = createTheme({
   palette: {
@@ -17,7 +18,9 @@ root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <App />
+      <Router>
+        <App />
+      </Router>
     </ThemeProvider>
   </React.StrictMode>
 );

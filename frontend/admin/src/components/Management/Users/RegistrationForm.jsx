@@ -33,7 +33,7 @@ export default function RegistrationForm() {
 
     const StyleDiv = styled('div')({
         textAlign: 'center',
-        marginTop: 30,
+        marginTop: '15px',
     });
 
     const StyleDivItem = styled('div')({
@@ -108,8 +108,6 @@ export default function RegistrationForm() {
         Ngay_den_tham: "",
     });
 
-    console.log(parents);
-
     const handleDelete = async (id) => {
         // Hiển thị thông báo xác nhận xóa
         const result = await Swal.fire({
@@ -133,7 +131,6 @@ export default function RegistrationForm() {
                 'success'
             );
 
-            // Cập nhật lại danh sách sau khi xóa
             setData(data.filter(item => item.id !== id));
         } catch (error) {
             console.error('Có lỗi xảy ra:', error);

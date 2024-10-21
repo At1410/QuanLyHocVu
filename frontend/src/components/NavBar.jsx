@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logo from '../img/Logo.png';
 
 import AppBar from '@mui/material/AppBar';
@@ -9,12 +9,15 @@ import WidgetsIcon from '@mui/icons-material/Widgets';
 import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import { styled, Typography } from '@mui/material';
+import { styled } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
-export default function Navbar() {
+import Swal from 'sweetalert2';
+
+export default function Navbar({ isLoggedIn, setIsLoggedIn }) {
     const location = useLocation();
+    const navigate = useNavigate();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -40,19 +43,20 @@ export default function Navbar() {
         },
     }));
 
-    const getPageName = (pathname) => {
-        switch (pathname) {
-            case "/":
-                return "Trang Chủ";
-            case "/giaovien":
-                return "Giáo viên";
-            case "/lophoc":
-                return "Lớp học";
-            case "/dangki":
-                return "Đăng ký";
-            default:
-                return "";
-        }
+    const handleLogout = () => {
+        Swal.fire({
+            title: 'Bạn có chắc chắn muốn đăng xuất không?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Đăng xuất',
+            cancelButtonText: 'Hủy',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                localStorage.setItem('isLoggedIn', 'false');
+                setIsLoggedIn(false);
+                navigate('/dangnhap');
+            }
+        });
     };
 
     const renderMenuLinks = (
@@ -69,6 +73,19 @@ export default function Navbar() {
             <Link to="/dangki" style={{ textDecoration: 'none' }}>
                 <StyleButton isActive={location.pathname === "/dangki"}>Đăng ký</StyleButton>
             </Link>
+
+            {isLoggedIn ? (
+                <>
+                    <Link to="/taikhoan" style={{ textDecoration: 'none' }}>
+                        <StyleButton isActive={location.pathname === "/taikhoan"}>Tài khoản</StyleButton>
+                    </Link>
+                    <StyleButton onClick={handleLogout}>Đăng xuất</StyleButton>
+                </>
+            ) : (
+                <Link to="/dangnhap" style={{ textDecoration: 'none' }}>
+                    <StyleButton isActive={location.pathname === "/dangnhap"}>Đăng nhập</StyleButton>
+                </Link>
+            )}
         </div>
     );
 
@@ -77,7 +94,6 @@ export default function Navbar() {
             <AppBar position="fixed" sx={{
                 backgroundColor: "#ffffff",
                 borderRadius: 2,
-                marginTop: 1,
             }}>
                 <Toolbar>
 
@@ -103,49 +119,95 @@ export default function Navbar() {
                         <div>
                             <div style={{
                                 display: 'flex',
-                                marginLeft: 40,
-                                alignItems: 'center'
+                                alignItems: 'center',
+                                width: '100%',
                             }}>
-
                                 <IconButton
                                     edge="end"
                                     color="inherit"
                                     aria-label="menu"
                                     onClick={toggleDrawer(true)}
-                                    sx={{ color: 'black' }}
+                                    sx={{ color: 'black', margin: '0 auto' }}
                                 >
                                     <WidgetsIcon />
                                 </IconButton>
-
-                                <Typography color={'black'}
-                                    sx={{
-                                        marginLeft: 2,
-                                        color: 'black',
-                                    }}
-                                >
-                                    {getPageName(location.pathname)}
-                                </Typography>
                             </div>
-
                             <Drawer
                                 anchor="right"
                                 open={isDrawerOpen}
                                 onClose={toggleDrawer(false)}
                             >
                                 <List>
-                                    <ListItem button component={Link} to="/" onClick={toggleDrawer(false)}>
+                                    <ListItem
+                                        button
+                                        component={Link}
+                                        to="/"
+                                        onClick={toggleDrawer(false)}
+                                        sx={{ backgroundColor: location.pathname === "/" ? "#ff99ac" : "inherit" }}
+                                    >
                                         Trang Chủ
                                     </ListItem>
-                                    <ListItem button component={Link} to="/giaovien" onClick={toggleDrawer(false)}>
+                                    <ListItem
+                                        button
+                                        component={Link}
+                                        to="/giaovien"
+                                        onClick={toggleDrawer(false)}
+                                        sx={{ backgroundColor: location.pathname === "/giaovien" ? "#ff99ac" : "inherit" }}
+                                    >
                                         Giáo viên
                                     </ListItem>
-                                    <ListItem button component={Link} to="/lophoc" onClick={toggleDrawer(false)}>
+                                    <ListItem
+                                        button
+                                        component={Link}
+                                        to="/lophoc"
+                                        onClick={toggleDrawer(false)}
+                                        sx={{ backgroundColor: location.pathname === "/lophoc" ? "#ff99ac" : "inherit" }}
+                                    >
                                         Lớp học
                                     </ListItem>
-                                    <ListItem button component={Link} to="/dangki" onClick={toggleDrawer(false)}>
+                                    <ListItem
+                                        button
+                                        component={Link}
+                                        to="/dangki"
+                                        onClick={toggleDrawer(false)}
+                                        sx={{ backgroundColor: location.pathname === "/dangki" ? "#ff99ac" : "inherit" }}
+                                    >
                                         Đăng ký
                                     </ListItem>
+                                    <ListItem
+                                        button
+                                        component={Link}
+                                        to="/taikhoan"
+                                        onClick={toggleDrawer(false)}
+                                        sx={{ backgroundColor: location.pathname === "/taikhoan" ? "#ff99ac" : "inherit" }}
+                                    >
+                                        Tài Khoản
+                                    </ListItem>
+
+                                    {isLoggedIn ? (
+                                        <ListItem
+                                            button
+                                            onClick={() => {
+                                                handleLogout();
+                                                toggleDrawer(false)();
+                                            }}
+                                            sx={{ backgroundColor: location.pathname === "/dangnhap" ? "#ff99ac" : "inherit" }}
+                                        >
+                                            Đăng xuất
+                                        </ListItem>
+                                    ) : (
+                                        <ListItem
+                                            button
+                                            component={Link}
+                                            to="/dangnhap"
+                                            onClick={toggleDrawer(false)}
+                                            sx={{ backgroundColor: location.pathname === "/dangnhap" ? "#ff99ac" : "inherit" }}
+                                        >
+                                            Đăng nhập
+                                        </ListItem>
+                                    )}
                                 </List>
+
                             </Drawer>
                         </div>
                     ) : (

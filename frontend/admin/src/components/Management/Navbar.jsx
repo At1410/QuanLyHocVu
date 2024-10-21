@@ -11,10 +11,6 @@ import { styled } from '@mui/material';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 
-
-
-
-
 export default function Navbar({ setIsLoggedIn }) {
 
     const location = useLocation();
@@ -70,7 +66,6 @@ export default function Navbar({ setIsLoggedIn }) {
         <AppBar position="fixed" sx={{
             backgroundColor: "#ffffff",
             borderRadius: 2,
-            marginTop: 1,
             zIndex: 1,
         }}>
             <Toolbar>
@@ -84,11 +79,14 @@ export default function Navbar({ setIsLoggedIn }) {
                     </Link>
                 </IconButton>
                 <div style={{ marginLeft: 'auto', display: 'flex', gap: '15px' }}>
-                    <Link to="/lophoc" style={{ textDecoration: 'none' }}>
-                        <StyleButton isActive={location.pathname === "/lophoc"}>Quản lý lớp học</StyleButton>
-                    </Link>
                     <Link to="/thongtin" style={{ textDecoration: 'none' }}>
                         <StyleButton isActive={location.pathname === "/thongtin"}>Quản lý thông tin</StyleButton>
+                    </Link>
+                    <Link to="/nguoidung" style={{ textDecoration: 'none' }}>
+                        <StyleButton isActive={location.pathname === "/nguoidung"}>Quản lý người dùng</StyleButton>
+                    </Link>
+                    <Link to="/lophoc" style={{ textDecoration: 'none' }}>
+                        <StyleButton isActive={location.pathname === "/lophoc"}>Quản lý lớp học</StyleButton>
                     </Link>
                     <Link to="/nhanvien" style={{ textDecoration: 'none' }}>
                         <StyleButton isActive={location.pathname === "/nhanvien"}>Quản lý nhân viên</StyleButton>

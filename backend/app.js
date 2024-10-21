@@ -56,6 +56,7 @@ app.post('/treem-phuhuynh', routesPost);
 app.post('/lop', routesPost);
 app.post('/them-tre/:id_lop/:id_treem', routesPost);
 app.post('/giang-day/:id_Lop/:id_GV', routesPost);
+app.post('/dk-nghi-hoc/:id_tre', routesPost);
 
 app.put('/thong-tin/:id', routesPut);
 app.put('/nhan-vien/:id', routesPut);

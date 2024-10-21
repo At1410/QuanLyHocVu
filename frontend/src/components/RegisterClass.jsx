@@ -45,9 +45,6 @@ export default function RegisterClass() {
                 title: 'Lỗi!',
                 text: 'Vui lòng nhập đầy đủ thông tin.',
                 icon: 'error',
-                customClass: {
-                    popup: 'swal2-custom-popup',
-                }
             });
             return;
         }
@@ -58,9 +55,6 @@ export default function RegisterClass() {
                 title: 'Lỗi!',
                 text: 'Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại Việt Nam hợp lệ.',
                 icon: 'error',
-                customClass: {
-                    popup: 'swal2-custom-popup',
-                }
             });
             return;
         }
@@ -72,9 +66,6 @@ export default function RegisterClass() {
                 title: 'Lỗi!',
                 text: 'Ngày sinh phải trước ngày hôm nay.',
                 icon: 'error',
-                customClass: {
-                    popup: 'swal2-custom-popup',
-                }
             });
             return;
         }
@@ -85,9 +76,6 @@ export default function RegisterClass() {
                 title: 'Lỗi!',
                 text: 'Ngày đến thăm phải sau ngày hôm nay.',
                 icon: 'error',
-                customClass: {
-                    popup: 'swal2-custom-popup',
-                }
             });
 
             return;
@@ -102,9 +90,6 @@ export default function RegisterClass() {
                     title: "Đăng ký thành công!",
                     showConfirmButton: false,
                     timer: 1500,
-                    customClass: {
-                        popup: 'swal2-custom-popup',
-                    }
                 });
                 setFormData({
                     Ho_ten: '',
@@ -123,20 +108,21 @@ export default function RegisterClass() {
                 title: "Đăng ký không thành công!",
                 showConfirmButton: false,
                 timer: 1500,
-                customClass: {
-                    popup: 'swal2-custom-popup',
-                }
             });
         }
     };
 
     return (
-        <Container maxWidth="sm" sx={{ marginTop: 10 }}>
+        <Container maxWidth="sm" sx={{
+            marginTop: 10,
+        }}>
             <Box
                 component="form"
                 noValidate
                 autoComplete="off"
-                sx={{ mt: 3 }}
+                sx={{
+                    mt: 3,
+                }}
             >
                 <Typography variant="h4" align="center" gutterBottom>
                     Thông Tin Đăng Ký Ghé Thăm
@@ -232,17 +218,17 @@ export default function RegisterClass() {
 
             <style>
                 {`
-                .swal2-custom-popup {
-                    width: 300px !important;
-                    font-size: 15px !important;
-                }
+                        .swal2-custom-popup {
+                            width: 300px !important;
+                            font-size: 15px !important;
+                        }
 
-                @media (max-width: 600px) {
-                    .swal2-custom-popup {
-                        width: 70% !important; /* Kích thước sẽ thay đổi theo tỷ lệ màn hình trên thiết bị di động */
-                    }
-                }
-            `}
+                        @media (max-width: 600px) {
+                            .swal2-custom-popup {
+                                width: 70% !important;
+                            }
+                        }
+                    `}
             </style>
         </Container >
     );

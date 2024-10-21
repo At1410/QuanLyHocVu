@@ -133,5 +133,21 @@ router.post('/giang-day/:id_Lop/:id_GV', (req, res) => {
     });
 });
 
+router.post('/dk-nghi-hoc/:id_tre', (req, res) => {
+    const { id_tre } = req.params;
+    const { ngay_nghi, ngay_hoc_lai, ly_do } = req.body;
+
+    const payload = [ngay_nghi, ngay_hoc_lai, ly_do, id_tre];
+
+    const query = 'INSERT INTO donnh (ngay_nghi, ngay_hoc_lai, ly_do, id_tre) VALUES (?, ?, ?, ?)';
+
+    db.query(query, payload, (err, result) => {
+        if (err) {
+            console.error('Database query error:', err);
+            return res.status(500).json({ success: false, error: err.message });
+        }
+        res.json({ success: true, data: result });
+    });
+});
 
 module.exports = router;

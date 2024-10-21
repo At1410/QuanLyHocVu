@@ -15,7 +15,7 @@ function Teacher() {
         padding: theme.spacing(1),
         color: theme.palette.text.secondary,
         textAlign: 'left',
-        display: 'flex', // Sử dụng flexbox để bố trí các phần tử ngang hàng
+        display: 'flex',
         alignItems: 'center',
     }));
 
@@ -28,8 +28,7 @@ function Teacher() {
 
     const StyleDiv = styled('div')({
         textAlign: 'center',
-        marginTop: 90,
-        marginBottom: 20,
+        marginTop: 100,
         marginLeft: 'auto',
         marginRight: 'auto',
         maxWidth: '1200px',

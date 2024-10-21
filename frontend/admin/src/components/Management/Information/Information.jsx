@@ -49,7 +49,6 @@ export default function Information() {
         fetch('http://localhost:5000/thong-tin')
             .then(response => response.json())
             .then(data => {
-                console.log(data);
                 setData(data);
             })
             .catch(error => {
@@ -57,7 +56,6 @@ export default function Information() {
             });
     }, []);
 
-    // Xử lý thay đổi trang
     const handlePageChange = (event, value) => {
         setCurrentPage(value);
     };
@@ -67,9 +65,7 @@ export default function Information() {
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentData = data.slice(indexOfFirstItem, indexOfLastItem);
 
-    //Xóa thông tin
     const handleDelete = async (id) => {
-        // Hiển thị thông báo xác nhận xóa
         const result = await Swal.fire({
             title: 'Bạn có chắc chắn không?',
             text: 'Bạn sẽ không thể phục hồi dữ liệu đã xóa!',
@@ -81,7 +77,6 @@ export default function Information() {
             cancelButtonText: 'Hủy'
         });
 
-        // const confirmDelete = window.confirm('Bạn có chắc chắn muốn xóa thông tin này không?');
         if (!result.isConfirmed) return;
 
         try {
@@ -92,7 +87,6 @@ export default function Information() {
                 'success'
             );
 
-            // Cập nhật lại danh sách sau khi xóa
             setData(data.filter(item => item.id !== id));
         } catch (error) {
             console.error('Có lỗi xảy ra:', error);
@@ -103,8 +97,6 @@ export default function Information() {
             );
         }
     };
-
-    //Cập nhật thông tin
 
     const [tenDM, settenDM] = useState('');
     const [noiDung, setnoiDung] = useState('');

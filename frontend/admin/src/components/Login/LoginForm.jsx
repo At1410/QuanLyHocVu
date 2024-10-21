@@ -34,9 +34,6 @@ export default function LoginForm({ setIsLoggedIn }) {
         padding: theme.spacing(2, 4, 3),
     }));
 
-
-
-    // Xử lý
     const navigate = useNavigate();
 
     const handleSubmit = (e) => {
@@ -47,9 +44,6 @@ export default function LoginForm({ setIsLoggedIn }) {
 
         if (username === 'admin' && password === 'admin') {
 
-            localStorage.setItem('isLoggedIn', 'true');
-            setIsLoggedIn(true);
-
             Swal.fire({
                 position: "center",
                 icon: "success",
@@ -57,6 +51,8 @@ export default function LoginForm({ setIsLoggedIn }) {
                 showConfirmButton: false,
                 timer: 1500
             }).then(() => {
+                localStorage.setItem('isLoggedIn', 'true');
+                setIsLoggedIn(true);
                 navigate('/');
             });
 
@@ -68,6 +64,7 @@ export default function LoginForm({ setIsLoggedIn }) {
             });
         }
     }
+
     return (
         <div>
             <Box style={backgroundStyle}>

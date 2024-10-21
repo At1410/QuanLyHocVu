@@ -47,6 +47,14 @@ export default function FilterStaff({ codeFilterStaff }) {
     const activeCount = activeStaff.length;
     const stoppedCount = activeStaffStop.length;
 
+    const Gender = (data) => {
+        if (data === 1) {
+            return 'Nam';
+        } else {
+            return 'Nữ';
+        }
+    };
+
     return (
         <div>
 
@@ -73,7 +81,7 @@ export default function FilterStaff({ codeFilterStaff }) {
                                     <TableCell>{filteredItem.Ten_Nhan_Vien}</TableCell>
                                     <TableCell>{filteredItem.Sdt}</TableCell>
                                     <TableCell>{formatDate(filteredItem.Ngay_sinh)}</TableCell>
-                                    <TableCell>{filteredItem.Gioi_tinh}</TableCell>
+                                    <TableCell>{Gender(filteredItem.Gioi_tinh)}</TableCell>
                                     <TableCell>{filteredItem.Dia_chi}</TableCell>
                                 </TableRow>
                             ))
@@ -111,7 +119,7 @@ export default function FilterStaff({ codeFilterStaff }) {
                                     <TableCell>{filteredItem.Ten_Nhan_Vien}</TableCell>
                                     <TableCell>{filteredItem.Sdt}</TableCell>
                                     <TableCell>{formatDate(filteredItem.Ngay_sinh)}</TableCell>
-                                    <TableCell>{filteredItem.Gioi_tinh}</TableCell>
+                                    <TableCell>{Gender(filteredItem.Gioi_tinh)}</TableCell>
                                     <TableCell>{filteredItem.Dia_chi}</TableCell>
                                 </TableRow>
                             ))

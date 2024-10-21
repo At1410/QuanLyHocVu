@@ -67,7 +67,7 @@ export default function NoRegistrationForm() {
     return (
         <div>
             <TableContainer component={Paper} sx={{
-                marginTop: '20px',
+                marginTop: '15px',
                 width: '100%',
             }}>
                 <Table>

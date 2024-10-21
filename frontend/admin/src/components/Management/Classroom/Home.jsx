@@ -18,14 +18,12 @@ import AddChild from './AddChild';
 import ClassList from './ClassList';
 import CreateClass from './CreateClass';
 import ChildList from './ChildList';
-import RegistrationForm from './RegistrationForm';
 import FilterClass from "./FilterClass";
 import FilterChild from "./FilterChild";
 
 import SearchBar from "../SearchBar";
 import ChildStop from './ChildStop';
 import ClassStop from "./ClassStop";
-import NoRegistrationForm from "./NoRegistrationForm";
 
 
 
@@ -62,12 +60,6 @@ export default function ManagementClassRoomHome() {
 
     const handleStudentToggle = () => {
         setActiveComponent(activeComponent === 'childList' ? 'childStop' : 'childList');
-        setSelectedFilter('');
-        setSelectedFilterChild('');
-    };
-
-    const handleFromToggle = () => {
-        setActiveComponent(activeComponent === 'registrationForm' ? 'noRegistrationForm' : 'registrationForm');
         setSelectedFilter('');
         setSelectedFilterChild('');
     };
@@ -139,11 +131,6 @@ export default function ManagementClassRoomHome() {
                     justifyContent: 'center',
                 }}>
                     <SearchBar />
-                    <StyleButton
-                        onClick={handleFromToggle}
-                    >
-                        {activeComponent === 'noRegistrationForm' ? "ĐÃ ĐẾN THĂM" : "CHƯA ĐẾN THĂM"}
-                    </StyleButton>
                     <StyleButton
                         onClick={handleStudentToggle}
                     >
@@ -249,16 +236,10 @@ export default function ManagementClassRoomHome() {
                     activeComponent === 'childList' && <ChildList />
                 }
                 {
-                    activeComponent === 'registrationForm' && <RegistrationForm />
-                }
-                {
                     activeComponent === 'classStop' && <ClassStop />
                 }
                 {
                     activeComponent === 'childStop' && <ChildStop />
-                }
-                {
-                    activeComponent === 'noRegistrationForm' && <NoRegistrationForm />
                 }
                 {
                     activeComponent === 'filterClass' && <FilterClass codeFilter={selectedFilterCode} />
@@ -269,12 +250,14 @@ export default function ManagementClassRoomHome() {
             </div >
 
             <Backdrop open={showAddChild || showCreateClass} onClick={handleCloseModal} />
-            <SpeedDial
+
+            < SpeedDial
                 ariaLabel="SpeedDial openIcon example"
                 sx={{
                     position: 'fixed',
                     bottom: '20px',
                     right: '20px',
+                    zIndex: 1000,
                 }}
                 icon={<SpeedDialIcon openIcon={<DesignServicesIcon />} />}
                 onClick={() => setOpen(!open)}
@@ -288,6 +271,7 @@ export default function ManagementClassRoomHome() {
                     />
                 ))}
             </SpeedDial>
+
 
             <AddChild open={showAddChild} setOpen={setShowAddChild} />
             <CreateClass open={showCreateClass} setOpen={setShowCreateClass} />

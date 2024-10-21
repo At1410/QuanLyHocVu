@@ -56,9 +56,7 @@ export default function HomeStaff() {
                 justifyContent: 'center',
             }}>
                 <SearchBar />
-
                 <CreateStaff />
-
                 <StyleButton variant="contained" sx={{
                     paddingLeft: '15px',
                     paddingRight: '15px',
