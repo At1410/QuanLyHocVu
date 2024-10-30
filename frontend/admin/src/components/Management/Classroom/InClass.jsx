@@ -54,7 +54,7 @@ export default function InClass({ open, handleClose, classId }) {
     const [teachers, setTeachers] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:5000/tham-gia')
+        fetch(`${process.env.REACT_APP_API_URL}/tham-gia`)
             .then(response => response.json())
             .then(data => {
                 setDataTG(data);
@@ -62,7 +62,7 @@ export default function InClass({ open, handleClose, classId }) {
             .catch(error => {
                 console.error('Error fetching students:', error);
             });
-        fetch('http://localhost:5000/giang-day')
+        fetch(`${process.env.REACT_APP_API_URL}/giang-day`)
             .then(response => response.json())
             .then(data => {
                 setDataGD(data);
@@ -70,7 +70,7 @@ export default function InClass({ open, handleClose, classId }) {
             .catch(error => {
                 console.error('Error fetching students:', error);
             });
-        fetch('http://localhost:5000/tre-em')
+        fetch(`${process.env.REACT_APP_API_URL}/tre-em`)
             .then(response => response.json())
             .then(data => {
                 const filtered = data.filter(child => child.Trang_thai === 1);
@@ -79,7 +79,7 @@ export default function InClass({ open, handleClose, classId }) {
             .catch(error => {
                 console.error('Error fetching students:', error);
             });
-        fetch('http://localhost:5000/giao-vien')
+        fetch(`${process.env.REACT_APP_API_URL}/giao-vien`)
             .then(response => response.json())
             .then(data => {
                 setTeachers(data);
@@ -87,7 +87,7 @@ export default function InClass({ open, handleClose, classId }) {
             .catch(error => {
                 console.error('Error fetching students:', error);
             });
-        fetch('http://localhost:5000/lop')
+        fetch(`${process.env.REACT_APP_API_URL}/lop`)
             .then(response => response.json())
             .then(data => {
                 setDataLop(data);
@@ -140,7 +140,7 @@ export default function InClass({ open, handleClose, classId }) {
 
             if (!result.isConfirmed) return;
 
-            await axios.delete(`http://localhost:5000/tham-gia/${classId}/${id}`);
+            await axios.delete(`${process.env.REACT_APP_API_URL}/tham-gia/${classId}/${id}`);
 
             Swal.fire(
                 'Đã hoàn thành!',
@@ -175,7 +175,7 @@ export default function InClass({ open, handleClose, classId }) {
 
             if (!result.isConfirmed) return;
 
-            await axios.delete(`http://localhost:5000/giang-day/${classId}/${id}`);
+            await axios.delete(`${process.env.REACT_APP_API_URL}/giang-day/${classId}/${id}`);
 
             Swal.fire(
                 'Đã hoàn thành!',
@@ -199,13 +199,11 @@ export default function InClass({ open, handleClose, classId }) {
     const fetchAvailableChildren = async () => {
 
         try {
-            const response = await axios.get(`http://localhost:5000/lop/${classId}`);
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/lop/${classId}`);
 
             const dataIDLop = response.data;
 
             const max_students = dataIDLop[0]?.So_luong;
-
-            console.log('Số lượng Max:', max_students);
 
             if (childrenInClassLength >= max_students) {
                 Swal.fire({
@@ -221,25 +219,24 @@ export default function InClass({ open, handleClose, classId }) {
 
             // console.log(' Lấy danh sách id_lop từ dataTG:', classIdsInParticipation);
 
-            // 2. Lấy các lớp có id_lop trùng và trạng thái === 0 từ bảng lop
+            // 2. Lấy các lớp có id_lop trùng và trạng thái === 1 từ bảng lop
             const inactiveClasses = dataLop
-                .filter(lop => classIdsInParticipation.includes(lop.id) && lop.trang_thai === 0) // Thay id_lop bằng id
+                .filter(lop => classIdsInParticipation.includes(lop.id) && lop.trang_thai === 1)
                 .map(lop => lop.id);
 
             // console.log('Các lớp đã hoàn thành:', inactiveClasses);
 
-            //3. Lấy danh sách id_treem từ dataTG với id_lop nằm trong các lớp`trang_thai === 0`
+            //3. Lấy danh sách id_treem từ dataTG với id_lop nằm trong các lớp`trang_thai === 1`
             const childrenInInactiveClasses = dataTG
-                .filter(item => inactiveClasses.includes(item.id_lop)) // Lọc những trẻ trong lớp có `trang_thai === 0`
-                .map(item => item.id_treem); // Lấy id_treem
+                .filter(item => inactiveClasses.includes(item.id_lop))
+                .map(item => item.id_treem);
 
 
             //console.log('Trẻ trong các lớp đã hoàn thành:', childrenInInactiveClasses);
 
             // 6. Kết hợp hai điều kiện: Trẻ không có trong lớp nào hoặc trẻ trong các lớp đã hoàn thành
             const available = children.filter(child =>
-                !dataTG.some(item => item.id_treem === child.id) ||
-                childrenInInactiveClasses.includes(child.id)
+                !childrenInInactiveClasses.includes(child.id)
             );
 
             // Kiểm tra danh sách trẻ có thể thêm
@@ -258,73 +255,103 @@ export default function InClass({ open, handleClose, classId }) {
     };
 
     const handleAddStudent = async (id) => {
-        console.log('Thêm trẻ:', id);
-        console.log('Vào trong lop', classId);
+        // console.log('Thêm trẻ:', id);
+        // console.log('Vào trong lop', classId);
+
         try {
-            const result = await Swal.fire({
-                title: 'Bạn có chắc chắn không?',
-                text: 'Bạn có chắc chắn muốn thêm trẻ này vào lớp hay không!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Có',
-                cancelButtonText: 'Hủy'
-            });
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/Max-tre-lop/${classId}`);
+            const data = response.data[0];
 
-            if (!result.isConfirmed) return;
+            // console.log('Dữ liệu:', data);
 
-            await axios.post(`http://localhost:5000/them-tre/${classId}/${id}`);
+            // console.log('Số lượng trẻ hiện tại:', data.SL_HT);
+            // console.log('Số lượng trẻ tối đa:', data.So_luong);
 
-            Swal.fire(
-                'Đã hoàn thành!',
-                'Đã thêm trẻ vào lớp!',
-                'success'
-            );
+            if (data.SL_HT < data.So_luong) {
+                const result = await Swal.fire({
+                    title: 'Bạn có chắc chắn không?',
+                    text: 'Bạn có chắc chắn muốn thêm trẻ này vào lớp hay không!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Có',
+                    cancelButtonText: 'Hủy'
+                });
 
+                if (!result.isConfirmed) return;
+
+                await axios.post(`${process.env.REACT_APP_API_URL}/them-tre/${classId}/${id}`);
+
+                Swal.fire(
+                    'Đã hoàn thành!',
+                    'Đã thêm trẻ vào lớp!',
+                    'success'
+                );
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Không thể thêm trẻ!',
+                    text: `Lớp đã đạt giới hạn số lượng trẻ tối đa (${data.So_luong} trẻ).`,
+                });
+            }
         } catch (error) {
             console.error('Có lỗi xảy ra:', error);
             Swal.fire(
                 'Lỗi!',
-                'Trẻ đã ở trong lớp.',
+                'Trẻ đã ở trong lớp hoặc có lỗi xảy ra trong quá trình xử lý.',
                 'error'
             );
-        };
+        }
     };
 
     const handleAddTeacherClass = async (id) => {
-        console.log('Thêm GV:', id);
-        console.log('Vào trong lop', classId);
+        // console.log('Thêm GV:', id);
+        // console.log('Vào trong lop', classId);
+
         try {
-            const result = await Swal.fire({
-                title: 'Bạn có chắc chắn không?',
-                text: 'Bạn có chắc chắn muốn thêm giáo viên này vào lớp hay không!',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Có',
-                cancelButtonText: 'Hủy'
-            });
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/Max-GV-lop/${classId}`);
+            const data = response.data[0];
+            console.log('Dữ liệu:', response.data);
+            // console.log('Số lượng GV hiện tại:', SL_GV);
+            // console.log('Số lượng GV tối đa:', SL_giaovien);
 
-            if (!result.isConfirmed) return;
+            if (data.SL_GV < data.SL_giaovien) {
+                const result = await Swal.fire({
+                    title: 'Bạn có chắc chắn không?',
+                    text: 'Bạn có chắc chắn muốn thêm giáo viên này vào lớp hay không!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Có',
+                    cancelButtonText: 'Hủy'
+                });
 
-            await axios.post(`http://localhost:5000/giang-day/${classId}/${id}`);
+                if (!result.isConfirmed) return;
 
-            Swal.fire(
-                'Đã hoàn thành!',
-                'Đã thêm giáo viên vào lớp!',
-                'success'
-            );
+                await axios.post(`${process.env.REACT_APP_API_URL}/giang-day/${classId}/${id}`);
 
+                Swal.fire(
+                    'Đã hoàn thành!',
+                    'Đã thêm giáo viên vào lớp!',
+                    'success'
+                );
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Không thể thêm trẻ!',
+                    text: `Lớp đã đạt giới hạn số lượng giáo viên tối đa (${data.SL_giaovien} GV).`,
+                });
+            }
         } catch (error) {
             console.error('Có lỗi xảy ra:', error);
             Swal.fire(
                 'Lỗi!',
-                'Giáo viên đã ở trong lớp',
+                'Giáo viên đã ở trong lớp hoặc có lỗi xảy ra trong quá trình xử lý.',
                 'error'
             );
-        };
+        }
     };
 
     const [showAddTeachersModal, setShowAddTeachersModal] = useState(false);
@@ -333,13 +360,13 @@ export default function InClass({ open, handleClose, classId }) {
     const fetchAvailableTeachers = async () => {
 
         try {
-            const response = await axios.get(`http://localhost:5000/lop/${classId}`);
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/lop/${classId}`);
 
             const dataIDLop = response.data;
 
             const max_Teachers = dataIDLop[0]?.SL_giaovien;
 
-            console.log('Số lượng Max:', max_Teachers);
+            // console.log('Số lượng Max:', max_Teachers);
 
             if (teachersInClassLength >= max_Teachers) {
                 Swal.fire({
@@ -349,36 +376,27 @@ export default function InClass({ open, handleClose, classId }) {
                 });
                 return;
             }
-            // 1. Lấy danh sách id_lop từ dataTG
+
+            // 1. Lấy danh sách id_Lop từ dataGD (các lớp mà giáo viên đang tham gia)
             const teacherIdsInParticipation = dataGD.map(item => item.id_Lop);
 
-            console.log('Lấy danh sách id_lop từ dataGD:', teacherIdsInParticipation);
-
-            // 2. Lấy các lớp có id_Lop trùng và trạng thái === 0 từ bảng lop
-            const inactiveClassesTeacher = dataLop
-                .filter(lop => teacherIdsInParticipation.includes(lop.id) && lop.trang_thai === 0) // Thay id_lop bằng id
+            // 2. Lấy các lớp có id_Lop trùng và trạng thái === 1 từ bảng lop (lớp đang hoạt động)
+            const activeClassesTeacher = dataLop
+                .filter(lop => teacherIdsInParticipation.includes(lop.id) && lop.trang_thai === 1)
                 .map(lop => lop.id);
 
-            console.log('Các lớp đã hoàn thành:', inactiveClassesTeacher);
+            // 3. Lấy danh sách id_GV từ dataGD với id_Lop nằm trong các lớp `trang_thai === 1`
+            const teachersInActiveClasses = dataGD
+                .filter(item => activeClassesTeacher.includes(item.id_Lop))
+                .map(item => item.id_GV);
 
-            //3. Lấy danh sách id_GV từ dataGD với id_Lop nằm trong các lớp`trang_thai === 0`
-            const teacherInInactiveClasses = dataGD
-                .filter(item => inactiveClassesTeacher.includes(item.id_Lop)) // Lọc những trẻ trong lớp có `trang_thai === 0`
-                .map(item => item.id_GV); // Lấy id_treem
-
-
-            console.log('GV trong các lớp đã hoàn thành:', teacherInInactiveClasses);
-
-            // 6. Kết hợp hai điều kiện: Trẻ không có trong lớp nào hoặc trẻ trong các lớp đã hoàn thành
-            const availableTeacher = teachers.filter(teachers =>
-                !dataTG.some(item => item.id_GV === teachers.id) ||
-                teacherInInactiveClasses.includes(teachers.id)
+            // 4. Lọc danh sách giáo viên có thể thêm: giáo viên không ở trong lớp nào có `trang_thai === 1`
+            const availableTeacher = teachers.filter(teacher =>
+                !teachersInActiveClasses.includes(teacher.id)
             );
 
-            // Kiểm tra danh sách GV có thể thêm
-            console.log('GV có thể thêm:', availableTeacher);
             setAvailableTeacher(availableTeacher);
-            setShowAddTeachersModal(true); // Mở modal
+            setShowAddTeachersModal(true);
 
         } catch (error) {
             console.error('Error fetching available children:', error);

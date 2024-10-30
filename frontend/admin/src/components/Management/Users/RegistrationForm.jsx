@@ -64,7 +64,7 @@ export default function RegistrationForm() {
     const itemsPerPage = 4;
 
     useEffect(() => {
-        fetch('http://localhost:5000/phieuDK')
+        fetch(`${process.env.REACT_APP_API_URL}/phieuDK`)
             .then(response => response.json())
             .then(data => {
                 const filteredData = data.filter(item => item.Danh_dau === 1);
@@ -124,7 +124,7 @@ export default function RegistrationForm() {
         if (!result.isConfirmed) return;
 
         try {
-            await axios.delete(`http://localhost:5000/phieudk/${id}`);
+            await axios.delete(`${process.env.REACT_APP_API_URL}/phieudk/${id}`);
             Swal.fire(
                 'Đã xóa!',
                 'Bạn đã xóa phụ huynh không đến thăm!',
@@ -168,7 +168,7 @@ export default function RegistrationForm() {
 
             const newStatus = Danh_dau === 1 ? 0 : 1;
 
-            await axios.put(`http://localhost:5000/danh_dau/${id}`, { ...setParents, Danh_dau: newStatus });
+            await axios.put(`${process.env.REACT_APP_API_URL}/danh_dau/${id}`, { ...setParents, Danh_dau: newStatus });
 
             setData((prevData) =>
                 prevData.map((item) => (item.id === id ? { ...item, Danh_dau: newStatus } : item))

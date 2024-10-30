@@ -78,7 +78,7 @@ export default function ChildList() {
     const itemsPerPage = 6;
 
     useEffect(() => {
-        fetch('http://localhost:5000/tre-em')
+        fetch(`${process.env.REACT_APP_API_URL}/tre-em`)
             .then(response => response.json())
             .then(data => {
                 const filteredData = data.filter(item => item.Trang_thai === 1);
@@ -87,7 +87,7 @@ export default function ChildList() {
             .catch(error => {
                 console.error('Error fetching data:', error);
             });
-        fetch('http://localhost:5000/phu-huynh')
+        fetch(`${process.env.REACT_APP_API_URL}/phu-huynh`)
             .then(response => response.json())
             .then(data => {
                 setParent(data);
@@ -160,7 +160,7 @@ export default function ChildList() {
 
             const newStatus = Trang_thai === 1 ? 0 : 1;
 
-            await axios.put(`http://localhost:5000/trang-thai-tre/${id}`, { ...setChildList, Trang_thai: newStatus });
+            await axios.put(`${process.env.REACT_APP_API_URL}/trang-thai-tre/${id}`, { ...setChildList, Trang_thai: newStatus });
 
             setData((prevData) =>
                 prevData.map((item) => (item.id === id ? { ...item, Trang_thai: newStatus } : item))
@@ -199,9 +199,9 @@ export default function ChildList() {
 
         try {
 
-            await axios.delete(`http://localhost:5000/tre-em/${item.id}`);
+            await axios.delete(`${process.env.REACT_APP_API_URL}/tre-em/${item.id}`);
 
-            await axios.delete(`http://localhost:5000/phu-huynh/${item.PH_id}`);
+            await axios.delete(`${process.env.REACT_APP_API_URL}/phu-huynh/${item.PH_id}`);
 
             setData(data.filter(tem => tem.id !== item.id));
 
@@ -304,8 +304,8 @@ export default function ChildList() {
                 Quan_he: childParent.Quan_he,
             };
 
-            await axios.put(`http://localhost:5000/tre-em/${currentItem.id}`, payload);
-            await axios.put(`http://localhost:5000/phu-huynh/${currentItem.PH_id}`, parentPayload);
+            await axios.put(`${process.env.REACT_APP_API_URL}/tre-em/${currentItem.id}`, payload);
+            await axios.put(`${process.env.REACT_APP_API_URL}/phu-huynh/${currentItem.PH_id}`, parentPayload);
 
             setData(data.map(item =>
                 item.id === currentItem.id ? { ...item, ...payload } : item

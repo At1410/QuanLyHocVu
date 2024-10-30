@@ -66,7 +66,7 @@ export default function LeavesAccount() {
         }
 
         try {
-            const response = await axios.post(`http://localhost:5000/dk-nghi-hoc/${id_tre}`, formData);
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/dk-nghi-hoc/${id_tre}`, formData);
             if (response.data.success) {
                 Swal.fire({
                     position: "center",

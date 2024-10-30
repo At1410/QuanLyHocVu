@@ -28,7 +28,7 @@ export default function FilterClass({ codeFilter }) {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:5000/lop-loai')
+        fetch(`${process.env.REACT_APP_API_URL}/lop-loai`)
             .then(response => response.json())
             .then(data => {
                 setData(data);

@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Information from './Information';
-import SearchBar from '../SearchBar';
+import SearchInf from './SearchInf';
 import CreateInf from './CreateInf';
 import { styled } from '@mui/material';
 
 function HomeInf() {
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const handleSearch = (term) => {
+        setSearchTerm(term);
+    };
 
     // Style
     const StyleDiv = styled('div')({
@@ -12,15 +17,15 @@ function HomeInf() {
         justifyContent: 'center',
         padding: '20px',
         marginTop: 70,
-    })
+    });
 
     return (
         <div>
             <StyleDiv>
-                <SearchBar />
+                <SearchInf onSearch={handleSearch} />
                 <CreateInf />
             </StyleDiv>
-            <Information />
+            <Information searchTerm={searchTerm} />
         </div>
     );
 }

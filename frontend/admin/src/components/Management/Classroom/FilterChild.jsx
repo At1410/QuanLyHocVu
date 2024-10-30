@@ -28,7 +28,7 @@ export default function FilterChild({ codeFilterChild }) {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:5000/tre-em')
+        fetch(`${process.env.REACT_APP_API_URL}/tre-em`)
             .then(response => response.json())
             .then(data => {
                 setData(data);

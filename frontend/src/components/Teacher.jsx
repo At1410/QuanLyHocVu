@@ -54,7 +54,7 @@ function Teacher() {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:5000/giao-vien')
+        fetch(`${process.env.REACT_APP_API_URL}/giao-vien`)
             .then(response => response.json())
             .then(data => {
                 const filteredData = data.filter(employee => employee.trang_thai === 1);

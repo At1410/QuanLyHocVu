@@ -231,5 +231,49 @@ router.get('/thong-ke', (req, res) => {
     });
 });
 
+router.get('/Max-tre-lop/:idLop', (req, res) => {
+    const { idLop } = req.params;
+    const query = `
+        SELECT l.id AS id_lop, COALESCE(COUNT(tg.id_lop), 0) AS SL_HT, loai.So_luong
+        FROM babyhouse.lop l
+        LEFT JOIN babyhouse.thamgia tg ON l.id = tg.id_lop
+        LEFT JOIN babyhouse.treem em ON em.id = tg.id_treem
+        JOIN babyhouse.loai loai ON l.Loai_id = loai.id
+        WHERE l.trang_thai = 1 AND l.id = ?
+        GROUP BY l.id, loai.So_luong;
+    `;
+    db.query(query, [idLop], (err, result) => {
+        if (err) {
+            console.log("Error:", err);
+            res.status(500).send('Có lỗi xảy ra!');
+        } else {
+            console.log(result);
+            res.json(result);
+        }
+    });
+});
+
+router.get('/Max-GV-lop/:idLop', (req, res) => {
+    const { idLop } = req.params;
+    const query = `
+        SELECT l.id AS id_Lop, COALESCE(COUNT(gd.id_Lop), 0) AS SL_GV, loai.SL_giaovien
+        FROM babyhouse.lop l
+        LEFT JOIN babyhouse.giangday gd ON l.id = gd.id_Lop
+        LEFT JOIN babyhouse.nhanvien nv ON nv.id = gd.id_GV
+        JOIN babyhouse.loai loai ON l.Loai_id = loai.id
+        WHERE l.trang_thai = 1 AND l.id = ?
+        GROUP BY l.id, loai.SL_giaovien;
+    `;
+    db.query(query, [idLop], (err, result) => {
+        if (err) {
+            console.log("Error:", err);
+            res.status(500).send('Có lỗi xảy ra!');
+        } else {
+            console.log(result);
+            res.json(result);
+        }
+    });
+});
+
 
 module.exports = router;

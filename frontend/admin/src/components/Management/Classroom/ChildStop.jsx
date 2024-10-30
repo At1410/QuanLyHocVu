@@ -68,7 +68,7 @@ export default function ChildStop() {
     const itemsPerPage = 6;
 
     useEffect(() => {
-        fetch('http://localhost:5000/tre-em')
+        fetch(`${process.env.REACT_APP_API_URL}/tre-em`)
             .then(response => response.json())
             .then(data => {
                 const filteredData = data.filter(item => item.Trang_thai === 0);
@@ -77,7 +77,7 @@ export default function ChildStop() {
             .catch(error => {
                 console.error('Error fetching data:', error);
             });
-        fetch('http://localhost:5000/phu-huynh')
+        fetch(`${process.env.REACT_APP_API_URL}/phu-huynh`)
             .then(response => response.json())
             .then(data => {
                 setParent(data);
@@ -159,7 +159,7 @@ export default function ChildStop() {
 
             const newStatus = Trang_thai === 1 ? 0 : 1;
 
-            await axios.put(`http://localhost:5000/trang-thai-tre/${id}`, { ...setChildList, Trang_thai: newStatus });
+            await axios.put(`${process.env.REACT_APP_API_URL}/trang-thai-tre/${id}`, { ...setChildList, Trang_thai: newStatus });
 
             setData((prevData) =>
                 prevData.map((item) => (item.id === id ? { ...item, Trang_thai: newStatus } : item))

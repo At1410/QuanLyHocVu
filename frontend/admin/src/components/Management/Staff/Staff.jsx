@@ -71,10 +71,9 @@ function Staff() {
     const itemsPerPage = 4;
 
     useEffect(() => {
-        fetch('http://localhost:5000/nhan-vien')
+        fetch(`${process.env.REACT_APP_API_URL}/nhan-vien`)
             .then(response => response.json())
             .then(data => {
-                console.log(data);
                 const filteredData = data.filter(employee => employee.trang_thai === 1);
                 setData(filteredData);
             })
@@ -125,7 +124,7 @@ function Staff() {
         if (!result.isConfirmed) return;
 
         try {
-            await axios.delete(`http://localhost:5000/nhan-vien/${id}`);
+            await axios.delete(`${process.env.REACT_APP_API_URL}/nhan-vien/${id}`);
             Swal.fire(
                 'Đã xóa!',
                 'Dữ liệu của bạn đã được xóa.',
@@ -211,7 +210,7 @@ function Staff() {
                 Chuc_vu_id: employe.chucVuId,
             };
 
-            await axios.put(`http://localhost:5000/nhan-vien/${currentItem.id}`, payload);
+            await axios.put(`${process.env.REACT_APP_API_URL}/nhan-vien/${currentItem.id}`, payload);
 
             setData(data.map(item =>
                 item.id === currentItem.id
@@ -268,7 +267,7 @@ function Staff() {
 
             const newStatus = trang_thai === 1 ? 0 : 1;
 
-            await axios.put(`http://localhost:5000/trang-thai/${id}`, { ...setEmployee, trang_thai: newStatus });
+            await axios.put(`${process.env.REACT_APP_API_URL}/trang-thai/${id}`, { ...setEmployee, trang_thai: newStatus });
 
             setData((prevData) =>
                 prevData.map((item) => (item.id === id ? { ...item, trang_thai: newStatus } : item))
@@ -298,7 +297,11 @@ function Staff() {
                     {currentData.map((item, index) => (
                         <Grid key={`${item.id}-${index}`} item xs={6}>
                             <Item>
-                                <Grid item xs={4}>
+                                <Grid item xs={4}
+                                    sx={{
+                                        paddingLeft: '10px',
+                                    }}
+                                >
                                     <StyleImg
                                         src={item.image_nv}
                                         alt={item.Ten_Nhan_Vien} />

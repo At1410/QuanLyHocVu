@@ -15,7 +15,7 @@ export default function Navbar({ setIsLoggedIn }) {
 
     const location = useLocation();
 
-    const StyleButton = styled('button')(({ isActive }) => ({
+    const StyleButton = styled('button')(({ 'data-is-active': isActive }) => ({
         backgroundColor: isActive ? "#89b847" : "#ffffff",
         marginRight: 15,
         borderRadius: 3,
@@ -80,18 +80,18 @@ export default function Navbar({ setIsLoggedIn }) {
                 </IconButton>
                 <div style={{ marginLeft: 'auto', display: 'flex', gap: '15px' }}>
                     <Link to="/thongtin" style={{ textDecoration: 'none' }}>
-                        <StyleButton isActive={location.pathname === "/thongtin"}>Quản lý thông tin</StyleButton>
+                        <StyleButton data-is-active={location.pathname === "/thongtin"}>Quản lý thông tin</StyleButton>
                     </Link>
                     <Link to="/nguoidung" style={{ textDecoration: 'none' }}>
-                        <StyleButton isActive={location.pathname === "/nguoidung"}>Quản lý người dùng</StyleButton>
+                        <StyleButton data-is-active={location.pathname === "/nguoidung"}>Quản lý người dùng</StyleButton>
                     </Link>
                     <Link to="/lophoc" style={{ textDecoration: 'none' }}>
-                        <StyleButton isActive={location.pathname === "/lophoc"}>Quản lý lớp học</StyleButton>
+                        <StyleButton data-is-active={location.pathname === "/lophoc"}>Quản lý lớp học</StyleButton>
                     </Link>
                     <Link to="/nhanvien" style={{ textDecoration: 'none' }}>
-                        <StyleButton isActive={location.pathname === "/nhanvien"}>Quản lý nhân viên</StyleButton>
+                        <StyleButton data-is-active={location.pathname === "/nhanvien"}>Quản lý nhân viên</StyleButton>
                     </Link>
-                    <StyleButton isActive={location.pathname === "/dangxuat"}
+                    <StyleButton data-is-active={location.pathname === "/dangxuat"}
                         onClick={handleLogout}
                     >
                         Đăng xuất

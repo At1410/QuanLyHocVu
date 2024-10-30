@@ -7,14 +7,19 @@ import HomeAccount from "./Home.account";
 
 export default function SimpleComponentSwitcher() {
 
-    const StyleButton = styled(Button)({
-        backgroundColor: '#ff99ac',
+    const StyleButton = styled(Button)(({ active }) => ({
+        backgroundColor: active ? '#ffffff' : '#ff99ac',
         padding: '5px',
+        paddingRight: '15px',
+        paddingLeft: '15px',
         borderRadius: '5px',
+        color: active ? '#ff99ac' : '#ffffff',
+        border: active ? '2px solid #ff99ac' : 'none',
         '&:hover': {
-            backgroundColor: '#fbb1bd',
-        }
-    });
+            backgroundColor: active ? '#ff99ac' : '#fbb1bd',
+            color: active ? '#ffffff' : '#ffffff',
+        },
+    }));
 
     const [activeComponent, setActiveComponent] = useState('HomeAccount');
 
@@ -32,10 +37,17 @@ export default function SimpleComponentSwitcher() {
                     marginBottom: '20px'
                 }}
             >
-                <StyleButton variant='contained' onClick={() => handleToggle('HomeAccount')}>
+                <StyleButton
+                    variant='contained'
+                    active={activeComponent === 'HomeAccount'}
+                    onClick={() => handleToggle('HomeAccount')}
+                >
                     Lớp học của trẻ
                 </StyleButton>
-                <StyleButton variant='contained' onClick={() => handleToggle('LeavesAccount')}
+                <StyleButton
+                    variant='contained'
+                    active={activeComponent === 'LeavesAccount'}
+                    onClick={() => handleToggle('LeavesAccount')}
                     sx={{ marginLeft: '15px' }}
                 >
                     Đăng kí nghỉ học

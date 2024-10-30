@@ -35,20 +35,35 @@ const actions = [
 export default function ManagementClassRoomHome() {
 
     //Style
-    const StyleButton = styled(Button)({
-        backgroundColor: "#89b847",
-        borderRadius: 3,
-        color: '#ffffff',
-        marginLeft: '20px',
+    // const StyleButton = styled(Button)({
+    //     backgroundColor: "#89b847",
+    //     borderRadius: 3,
+    //     color: '#ffffff',
+    //     marginLeft: '20px',
+    //     paddingLeft: 15,
+    //     paddingRight: 15,
+    //     border: '2px solid #89b847',
+    //     cursor: 'pointer',
+    //     borderColor: "#89b847",
+    //     '&:hover': {
+    //         backgroundColor: "#75a73f",
+    //     },
+    // });
+
+    const StyleButton = styled(Button)(({ active }) => ({
+        marginLeft: 20,
         paddingLeft: 15,
         paddingRight: 15,
-        border: '2px solid #89b847',
-        cursor: 'pointer',
-        borderColor: "#89b847",
+        backgroundColor: active ? '#ffffff' : '#89b847',
+        border: 'none',
+        borderRadius: 3,
+        color: active ? '#75a73f' : '#ffffff',
+        fontSize: 16,
         '&:hover': {
-            backgroundColor: "#75a73f",
+            backgroundColor: active ? '#75a73f' : '#75a73f',
+            color: '#ffffff',
         },
-    });
+    }));
 
     const [activeComponent, setActiveComponent] = useState('classList');
 
@@ -133,6 +148,7 @@ export default function ManagementClassRoomHome() {
                     <SearchBar />
                     <StyleButton
                         onClick={handleStudentToggle}
+                        active={activeComponent === 'childStop' || activeComponent === 'childList'}
                     >
                         {activeComponent === 'childStop' ? "TRẺ NGHỈ HỌC" : "TRẺ ĐANG HỌC"}
                     </StyleButton>
@@ -180,6 +196,7 @@ export default function ManagementClassRoomHome() {
 
                     <StyleButton
                         onClick={handleClassToggle}
+                        active={activeComponent === 'classStop' || activeComponent === 'classList'}
                     >
                         {activeComponent === 'classStop' ? "ĐÃ KẾT THÚC" : "ĐANG DIỄN RA"}
                     </StyleButton>

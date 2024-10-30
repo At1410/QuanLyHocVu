@@ -11,19 +11,18 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 export default function HomeStaff() {
 
     // Style
-    const StyleButton = styled(Button)({
-        paddingTop: 0,
-        paddingBottom: 0,
+    const StyleButton = styled(Button)(({ active }) => ({
         marginLeft: 20,
-        backgroundColor: '#89b847',
+        backgroundColor: active ? '#ffffff' : '#89b847',
         border: 'none',
         borderRadius: 3,
-        color: 'white',
+        color: active ? '#75a73f' : '#ffffff',
         fontSize: 16,
         '&:hover': {
-            backgroundColor: '#75a73f',
+            backgroundColor: active ? '#75a73f' : '#75a73f',
+            color: '#ffffff',
         },
-    })
+    }));
 
     const [showStoppedStaff, setShowStoppedStaff] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);

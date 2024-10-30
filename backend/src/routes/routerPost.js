@@ -29,11 +29,13 @@ router.post('/thong-tin', (req, res) => {
 });
 
 router.post('/nhan-vien', (req, res) => {
-    const { Ten_Nhan_Vien, Ngay_sinh, Dia_chi, Gioi_tinh, Que_quan, Sdt, CMND, Chuc_vu_id, trang_thai } = req.body;
+    const { Ten_Nhan_Vien, Ngay_sinh, Dia_chi, Gioi_tinh, Que_quan, Sdt, CMND, Chuc_vu_id, trang_thai, image_nv } = req.body;
 
-    const payload = [Ten_Nhan_Vien, Ngay_sinh, Dia_chi, Gioi_tinh, Que_quan, Sdt, CMND, Chuc_vu_id, trang_thai];
+    imageUrl = req.files && req.files[0].path;
 
-    const query = 'INSERT INTO nhanvien (Ten_Nhan_Vien, Ngay_sinh, Dia_chi, Gioi_tinh, Que_quan, Sdt, CMND, Chuc_vu_id, trang_thai) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    const payload = [Ten_Nhan_Vien, Ngay_sinh, Dia_chi, Gioi_tinh, Que_quan, Sdt, CMND, Chuc_vu_id, trang_thai, image_nv];
+
+    const query = 'INSERT INTO nhanvien (Ten_Nhan_Vien, Ngay_sinh, Dia_chi, Gioi_tinh, Que_quan, Sdt, CMND, Chuc_vu_id, trang_thai, image_nv) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
     db.query(query, payload, (err, result) => {
         if (err) {

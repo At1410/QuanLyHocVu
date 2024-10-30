@@ -27,7 +27,7 @@ export default function NoRegistrationForm() {
     const itemsPerPage = 5;
 
     useEffect(() => {
-        fetch('http://localhost:5000/phieuDK')
+        fetch(`${process.env.REACT_APP_API_URL}/phieuDK`)
             .then(response => response.json())
             .then(data => {
                 const filteredData = data.filter(item => item.Danh_dau === 0);

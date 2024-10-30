@@ -40,7 +40,7 @@ export default function ClassRoom() {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:5000/loai')
+        fetch(`${process.env.REACT_APP_API_URL}/loai`)
             .then(response => response.json())
             .then(data => {
                 console.log(data);

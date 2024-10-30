@@ -64,7 +64,7 @@ export default function ClassStop() {
     const itemsPerPage = 3;
 
     useEffect(() => {
-        fetch('http://localhost:5000/lop-loai')
+        fetch(`${process.env.REACT_APP_API_URL}/lop-loai`)
             .then(response => response.json())
             .then(data => {
                 const filteredData = data.filter(item => item.trang_thai === 0);
@@ -131,7 +131,7 @@ export default function ClassStop() {
 
             const newStatus = trang_thai === 1 ? 0 : 1;
 
-            await axios.put(`http://localhost:5000/trang-thai-lop/${id}`, { ...setClassList, trang_thai: newStatus });
+            await axios.put(`${process.env.REACT_APP_API_URL}/trang-thai-lop/${id}`, { ...setClassList, trang_thai: newStatus });
 
             setData((prevData) =>
                 prevData.map((item) => (item.id === id ? { ...item, trang_thai: newStatus } : item))

@@ -3,48 +3,23 @@ const db = require('./src/db/db');
 const cors = require('cors');
 const app = express();
 
-// Middleware để parse JSON
 app.use(express.json());
 app.use(cors());
 
-
-const multer = require('multer');
-const cloudinary = require('cloudinary').v2;
+const fs = require("fs");
 require('dotenv').config();
 
-const upload = multer({ dest: 'uploads/' }); // Lưu file tạm thời vào thư mục 'uploads'
 
-// Cấu hình Cloudinary
-cloudinary.config({
-    cloud_name: process.env.CLOUD_NAME,
-    api_key: process.env.API_KEY,
-    api_secret: process.env.API_SECRET,
-});
-
-// Route để upload ảnh
-app.post('/upload', upload.single('file'), (req, res) => {
-    const path = req.file.path; // Lấy đường dẫn file tạm thời
-
-    // Upload lên Cloudinary
-    cloudinary.uploader.upload(path, { folder: 'employee_photos' }, (error, result) => {
-        if (error) {
-            return res.status(500).send('Error uploading to Cloudinary');
-        }
-
-        res.json({ url: result.secure_url });
-    });
-});
-
-// Import router từ tệp routes.js
 const routesGet = require('./src/routes/route');
 const routesPost = require('./src/routes/routerPost');
 const routesPut = require('./src/routes/routerPut');
 const routesDelete = require('./src/routes/routerDelete');
 const routesFind = require('./src/routes/routerFind');
-
-// Sử dụng router cho các route;
+const uploadRoutes = require('./src/uploads/uploads.js');
 
 app.use('/', routesGet);
+
+app.use("/", uploadRoutes);
 
 app.get('/tim-kiem/nhan-vien', routesFind);
 app.get('/tim-kiem/thong-tin', routesFind);

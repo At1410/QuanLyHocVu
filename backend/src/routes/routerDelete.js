@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db/db');
 
-//Route DELETE
+
 router.delete('/thong-tin/:id', (req, res) => {
     const { id } = req.params;
     const sql = 'DELETE FROM thongtin WHERE id = ?';

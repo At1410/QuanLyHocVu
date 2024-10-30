@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
 import SearchChild from "./SearchChild";
 
-import { Grid, styled, Pagination, PaginationItem, Paper } from "@mui/material";
+import { Grid, styled, Paper } from "@mui/material";
 
 export default function StatisticalDayOff() {
 
@@ -38,7 +38,7 @@ export default function StatisticalDayOff() {
     const [leaveData, setLeaveData] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:5000/tre-em')
+        fetch(`${process.env.REACT_APP_API_URL}/tre-em`)
             .then(response => response.json())
             .then(data => {
                 setData(data);
@@ -46,7 +46,7 @@ export default function StatisticalDayOff() {
             .catch(error => {
                 console.error('Error fetching data:', error);
             });
-        fetch('http://localhost:5000/thong-ke')
+        fetch(`${process.env.REACT_APP_API_URL}/thong-ke`)
             .then(response => response.json())
             .then(data => {
                 setTgData(data);
@@ -54,7 +54,7 @@ export default function StatisticalDayOff() {
             .catch(error => {
                 console.error('Error fetching data:', error);
             });
-        fetch('http://localhost:5000/dk-nghi-hoc')
+        fetch(`${process.env.REACT_APP_API_URL}/dk-nghi-hoc`)
             .then(response => response.json())
             .then(data => {
                 setLeaveData(data);

@@ -38,7 +38,7 @@ export default function Login({ setIsLoggedIn }) {
         const username = e.target.elements.username.value;
         const password = e.target.elements.password.value;
 
-        fetch(`http://localhost:5000/tai-khoan/${username}`)
+        fetch(`${process.env.REACT_APP_API_URL}/tai-khoan/${username}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error("Không thể lấy dữ liệu người dùng");

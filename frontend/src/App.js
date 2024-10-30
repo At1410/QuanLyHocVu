@@ -12,7 +12,6 @@ import Footer from './components/Footer';
 import PrivateRoute from './components/Account/PrivateRoute';
 import HomeAccount from './components/Account/Home.account';
 import LeavesAccount from './components/Account/Leaves.account';
-import BuyAccount from './components/Account/BuyItems.account';
 import Account from './components/Account/Account';
 
 function App() {
@@ -44,7 +43,6 @@ function App() {
             <Route path="/taikhoan" element={<Account />} />
             <Route path="/trangchu" element={<HomeAccount />} />
             <Route path="/nghihoc" element={<LeavesAccount />} />
-            <Route path="/muahang" element={<BuyAccount />} />
           </Route>
 
 

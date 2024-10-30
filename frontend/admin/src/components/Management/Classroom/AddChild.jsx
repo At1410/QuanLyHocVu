@@ -67,7 +67,7 @@ export default function AppChild({ open, setOpen }) {
 
 
         try {
-            const response = await axios.post('http://localhost:5000/treem-phuhuynh', formData);
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/treem-phuhuynh`, formData);
             if (response.data.success) {
                 handleClose();
                 Swal.fire({

@@ -6,11 +6,10 @@ export default function Homepage() {
     const Item = styled(Paper)(({ theme }) => ({
         backgroundColor: '#ffffff',
         ...theme.typography.body2,
-        padding: theme.spacing(1),
         textAlign: 'left',
         marginLeft: '20px',
         marginRight: '20px',
-        padding: '20px',
+        padding: '25px',
         height: '100%',
         color: 'dark',
         ...theme.applyStyles('dark', {
@@ -23,7 +22,7 @@ export default function Homepage() {
     const [dataClass, setDataClass] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:5000/nhan-vien')
+        fetch(`${process.env.REACT_APP_API_URL}/nhan-vien`)
             .then(response => response.json())
             .then(data => {
                 setStaff(data);
@@ -33,7 +32,7 @@ export default function Homepage() {
             .catch(error => {
                 console.error('Error fetching data:', error);
             });
-        fetch('http://localhost:5000/tre-em')
+        fetch(`${process.env.REACT_APP_API_URL}/tre-em`)
             .then(response => response.json())
             .then(data => {
                 setDataChild(data);
@@ -43,7 +42,7 @@ export default function Homepage() {
             .catch(error => {
                 console.error('Error fetching data:', error);
             });
-        fetch('http://localhost:5000/lop-loai')
+        fetch(`${process.env.REACT_APP_API_URL}/lop-loai`)
             .then(response => response.json())
             .then(data => {
                 setDataClass(data);
@@ -166,7 +165,9 @@ export default function Homepage() {
     }
 
     return (
-        <div>
+        <div style={{
+            marginBottom: '10px',
+        }}>
             <div style={{
                 textAlign: 'center',
                 marginTop: 100,

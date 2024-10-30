@@ -13,7 +13,7 @@ export default function HomePage() {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:5000/thong-tin')
+        fetch(`${process.env.REACT_APP_API_URL}/thong-tin`)
             .then(response => response.json())
             .then(data => {
                 setData(data);

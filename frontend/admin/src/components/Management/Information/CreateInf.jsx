@@ -42,7 +42,7 @@ export default function CreateInf({ }) {
             try {
                 handleClose();
 
-                const response = await axios.post('http://localhost:5000/thong-tin', formData);
+                const response = await axios.post(`${process.env.REACT_APP_API_URL}/thong-tin`, formData);
                 if (response.data.success) {
                     // Hiển thị thông báo thành công
                     Swal.fire({

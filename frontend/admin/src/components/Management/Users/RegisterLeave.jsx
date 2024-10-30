@@ -39,7 +39,7 @@ export default function RegisterLeave() {
     const itemsPerPage = 4;
 
     useEffect(() => {
-        fetch('http://localhost:5000/dk-nghi-hoc')
+        fetch(`${process.env.REACT_APP_API_URL}/dk-nghi-hoc`)
             .then(response => response.json())
             .then(data => {
                 setData(data);
@@ -81,7 +81,7 @@ export default function RegisterLeave() {
                         <Grid key={index} item xs={6} >
                             <Item>
                                 <StyleDivItem>
-                                    <p>Mã trẻ: {item.id}</p>
+                                    <p>Mã trẻ: {item.id_tre}</p>
                                     <p>Họ tên trẻ: {item.Ten_tre}</p>
                                     <p>Ngày sinh: {formatDate(item.Ngay_sinh)}</p>
                                     <p>Giới tính:  {Gender(item.Gioi_tinh)} </p>

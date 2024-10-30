@@ -20,6 +20,7 @@ export default function CreateStaff() {
         CMND: '',
         trang_thai: true,
         Chuc_vu_id: '',
+        image_nv: null,
     });
 
     const handleChange = (e) => {
@@ -35,14 +36,25 @@ export default function CreateStaff() {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
-    // Hàm xử lý khi submit form
+    const handleImageUpload = (imageFile) => {
+        setFormData((prevData) => ({
+            ...prevData,
+            image_nv: imageFile,
+        }));
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (formData.Ten_Nhan_Vien?.trim() === '' || formData.Ngay_sinh?.trim() === '' ||
+        if (formData.Ten_Nhan_Vien?.trim() === '' ||
+            formData.Ngay_sinh?.trim() === '' ||
             formData.Dia_chi?.trim() === '' ||
-            formData.Que_quan?.trim() === '' || formData.Sdt?.trim() === '' ||
-            formData.CMND?.trim() === '' || formData.Gioi_tinh === null || formData.Chuc_vu_id === '') {
+            formData.Que_quan?.trim() === '' ||
+            formData.Sdt?.trim() === '' ||
+            formData.CMND?.trim() === '' ||
+            formData.Gioi_tinh === null ||
+            formData.Chuc_vu_id === '' ||
+            formData.image_nv === null) {
             Swal.fire(
                 'Lỗi!',
                 'Vui lòng nhập đầy đủ thông tin.',
@@ -83,38 +95,57 @@ export default function CreateStaff() {
         }
 
         try {
-            const response = await axios.post('http://localhost:5000/nhan-vien', formData);
+            const formDataImage = new FormData();
+            formDataImage.append("image_nv", formData.image_nv);
+
+            const imageUrlResponse = await axios.post(
+                `${process.env.REACT_APP_API_URL}/upload`,
+                formDataImage
+            );
+            // console.log(imageUrlResponse);
+
+            setFormData((prevData) => ({
+                ...prevData,
+                image_nv: imageUrlResponse.data.url,
+            }));
+            // console.log({ ...formData, image_nv: imageUrlResponse.data.url });
+
+            const response = await axios.post(
+                `${process.env.REACT_APP_API_URL}/nhan-vien`,
+                { ...formData, image_nv: imageUrlResponse.data.url }
+            );
             if (response.data.success) {
                 handleClose();
                 Swal.fire({
-                    position: 'center',
-                    icon: 'success',
-                    title: 'Dữ liệu đã được thêm thành công!',
+                    position: "center",
+                    icon: "success",
+                    title: "Dữ liệu đã được thêm thành công!",
                     showConfirmButton: false,
-                    timer: 1500
+                    timer: 1500,
                 }).then(() => {
                     setFormData({
-                        Ten_Nhan_Vien: '',
-                        Ngay_sinh: '',
-                        Dia_chi: '',
+                        Ten_Nhan_Vien: "",
+                        Ngay_sinh: "",
+                        Dia_chi: "",
                         Gioi_tinh: null,
-                        Que_quan: '',
-                        Sdt: '',
-                        CMND: '',
+                        Que_quan: "",
+                        Sdt: "",
+                        CMND: "",
                         trang_thai: true,
-                        Chuc_vu_id: '',
+                        Chuc_vu_id: "",
+                        image_nv: null,
                     });
                 });
             }
         } catch (error) {
             handleClose();
-            console.error('Lỗi khi thêm dữ liệu:', error);
+            // console.error("Lỗi khi thêm dữ liệu:", error);
             Swal.fire({
                 position: "center",
                 icon: "error",
                 title: "Thêm dữ liệu không thành công!",
                 showConfirmButton: false,
-                timer: 1500
+                timer: 1500,
             });
         }
 
@@ -274,7 +305,7 @@ export default function CreateStaff() {
 
                     </div>
 
-                    <UpdateImg />
+                    <UpdateImg onImageUpload={handleImageUpload} />
 
                     <Button variant="contained" onClick={handleSubmit}
                         sx={{

@@ -1,5 +1,5 @@
 import { useDropzone } from "react-dropzone";
-import { Box, IconButton, Typography } from "@mui/material";
+import { Box, IconButton, Typography, Snackbar } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 import { useCallback, useState } from "react";
 import { styled } from "@mui/system";
@@ -17,17 +17,35 @@ const Dropzone = styled(Box)(({ theme, isActive, isReject }) => ({
       : '#ccc',
 }));
 
-export default function UpLoadImg() {
+export default function UpLoadImg({ onImageUpload }) {
   const [selectedImage, setSelectedImage] = useState(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
-  const onDrop = useCallback((acceptedFiles) => {
-    if (acceptedFiles.length > 0) {
-      setSelectedImage(acceptedFiles[0]);
-    }
-  }, []);
+  const onDrop = useCallback(
+    async (acceptedFiles) => {
+      const file = acceptedFiles[0];
+
+      if (file && file.type.startsWith("image/")) {
+        setSelectedImage(file);
+
+        onImageUpload(file);
+
+        try {
+
+        } catch (error) {
+          console.error("Upload failed:", error);
+          setSnackbarOpen(true);
+        }
+      } else {
+        setSnackbarOpen(true);
+      }
+    },
+    [onImageUpload]
+  );
 
   const handleRemoveImage = () => {
     setSelectedImage(null);
+    onImageUpload(null);
   };
 
   const {
@@ -36,6 +54,10 @@ export default function UpLoadImg() {
     isDragActive,
     isDragReject,
   } = useDropzone({ onDrop, accept: { 'image/*': [] } });
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
+  };
 
   return (
     <Box className="container" p={2}>
@@ -85,6 +107,13 @@ export default function UpLoadImg() {
           </IconButton>
         </Box>
       )}
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        message="Vui lòng chỉ tải lên file hình ảnh."
+      />
     </Box>
   );
 }

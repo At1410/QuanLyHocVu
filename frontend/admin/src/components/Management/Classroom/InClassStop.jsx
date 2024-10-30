@@ -30,7 +30,7 @@ export default function InClass({ open, handleClose, classId }) {
     const [teachers, setTeachers] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:5000/tham-gia')
+        fetch(`${process.env.REACT_APP_API_URL}/tham-gia`)
             .then(response => response.json())
             .then(data => {
                 setDataTG(data);
@@ -38,7 +38,7 @@ export default function InClass({ open, handleClose, classId }) {
             .catch(error => {
                 console.error('Error fetching students:', error);
             });
-        fetch('http://localhost:5000/giang-day')
+        fetch(`${process.env.REACT_APP_API_URL}/giang-day`)
             .then(response => response.json())
             .then(data => {
                 setDataGD(data);
@@ -46,7 +46,7 @@ export default function InClass({ open, handleClose, classId }) {
             .catch(error => {
                 console.error('Error fetching students:', error);
             });
-        fetch('http://localhost:5000/tre-em')
+        fetch(`${process.env.REACT_APP_API_URL}/tre-em`)
             .then(response => response.json())
             .then(data => {
                 setChildren(data);
@@ -54,7 +54,7 @@ export default function InClass({ open, handleClose, classId }) {
             .catch(error => {
                 console.error('Error fetching students:', error);
             });
-        fetch('http://localhost:5000/giao-vien')
+        fetch(`${process.env.REACT_APP_API_URL}/giao-vien`)
             .then(response => response.json())
             .then(data => {
                 setTeachers(data);

@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
-import Swal from 'sweetalert2'
-
-
+import Swal from 'sweetalert2';
 import { Grid, Modal, styled, Typography, TextField, Button, Box, Pagination, PaginationItem } from "@mui/material";
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-export default function Information() {
-
-    //Style
+export default function Information({ searchTerm }) {
+    // Style
     const CustomPaginationItem = styled(PaginationItem)(({ theme }) => ({
         '&.Mui-selected': {
             backgroundColor: '#89b847',
@@ -18,13 +14,13 @@ export default function Information() {
         },
     }));
 
-    const StyleDiv = styled('div',)({
+    const StyleDiv = styled('div')({
         padding: '10px',
         margin: '10px',
         border: '2px solid #75a73f',
         borderRadius: 5,
         display: 'flex',
-    })
+    });
 
     const StyleButton = styled('button')({
         borderRadius: 3,
@@ -38,15 +34,15 @@ export default function Information() {
         '&:hover': {
             cursor: 'pointer'
         }
-    })
+    });
 
-    //Xử lý
+    // Xử lý
     const [data, setData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 3;
 
     useEffect(() => {
-        fetch('http://localhost:5000/thong-tin')
+        fetch(`${process.env.REACT_APP_API_URL}/thong-tin`)
             .then(response => response.json())
             .then(data => {
                 setData(data);
@@ -60,10 +56,15 @@ export default function Information() {
         setCurrentPage(value);
     };
 
-    // Tính toán dữ liệu nhân viên hiển thị trên mỗi trang
+    // Lọc dữ liệu dựa trên từ khóa tìm kiếm
+    const filteredData = data.filter(item =>
+        item.TenDM.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    // Tính toán dữ liệu hiển thị trên mỗi trang
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentData = data.slice(indexOfFirstItem, indexOfLastItem);
+    const currentData = filteredData.slice(indexOfFirstItem, indexOfLastItem);
 
     const handleDelete = async (id) => {
         const result = await Swal.fire({
@@ -80,7 +81,7 @@ export default function Information() {
         if (!result.isConfirmed) return;
 
         try {
-            await axios.delete(`http://localhost:5000/thong-tin/${id}`);
+            await axios.delete(`${process.env.REACT_APP_API_URL}/thong-tin/${id}`);
             Swal.fire(
                 'Đã xóa!',
                 'Dữ liệu của bạn đã được xóa.',
@@ -108,11 +109,11 @@ export default function Information() {
         settenDM(item.TenDM);
         setnoiDung(item.NoiDung);
         setopenDM(true);
-    }
+    };
 
     const handleClose = () => {
         setopenDM(false);
-    }
+    };
 
     const handleSave = async () => {
         const Ten_DM = tenDM || '';
@@ -127,7 +128,7 @@ export default function Information() {
         }
 
         try {
-            await axios.put(`http://localhost:5000/thong-tin/${currentItem.id}`, {
+            await axios.put(`${process.env.REACT_APP_API_URL}/thong-tin/${currentItem.id}`, {
                 TenDM: Ten_DM,
                 NoiDung: Noi_Dung,
             });
@@ -141,8 +142,7 @@ export default function Information() {
                     ? { ...item, TenDM: tenDM, NoiDung: noiDung } : item
             ));
             handleClose();
-        }
-        catch (error) {
+        } catch (error) {
             console.error('Có lỗi xảy ra:', error);
             handleClose();
             Swal.fire(
@@ -151,8 +151,7 @@ export default function Information() {
                 'error'
             );
         }
-    }
-
+    };
 
     return (
         <div>
@@ -185,7 +184,6 @@ export default function Information() {
                                     '&:hover': {
                                         backgroundColor: "#75a73f",
                                         color: "#ffffff",
-
                                     },
                                 }}>
                                     <ModeEditIcon />
@@ -197,7 +195,6 @@ export default function Information() {
                                         '&:hover': {
                                             backgroundColor: "#d00000",
                                             color: "#ffffff",
-
                                         },
                                     }}>
                                     <DeleteIcon />
@@ -209,18 +206,17 @@ export default function Information() {
             ))}
 
             <Pagination
-                count={Math.ceil(data.length / itemsPerPage)}
+                count={Math.ceil(filteredData.length / itemsPerPage)}
                 page={currentPage}
                 onChange={handlePageChange}
                 sx={{
                     marginTop: 2,
+                    marginBottom: 2,
                     justifyContent: 'center',
                     display: 'flex',
                 }}
-
                 renderItem={(item) => <CustomPaginationItem {...item} />}
             />
-
 
             {/* Modal */}
             <Modal open={openDM} onClose={handleClose}
@@ -238,7 +234,6 @@ export default function Information() {
                         flexDirection: 'column',
                         gap: 2,
                         width: '50%',
-                        // height: '60%',
                         margin: '0 auto',
                         padding: 2,
                         backgroundColor: '#f4f6f8',
@@ -254,7 +249,6 @@ export default function Information() {
                         variant="outlined"
                         value={tenDM}
                         onChange={(e) => settenDM(e.target.value)}
-
                     />
 
                     <TextField

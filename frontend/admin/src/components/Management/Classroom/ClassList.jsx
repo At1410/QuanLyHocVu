@@ -69,7 +69,7 @@ export default function ClassList() {
     const itemsPerPage = 3;
 
     useEffect(() => {
-        fetch('http://localhost:5000/lop-loai')
+        fetch(`${process.env.REACT_APP_API_URL}/lop-loai`)
             .then(response => response.json())
             .then(data => {
                 const filteredData = data.filter(item => item.trang_thai === 1);
@@ -138,7 +138,7 @@ export default function ClassList() {
 
             const newStatus = trang_thai === 1 ? 0 : 1;
 
-            await axios.put(`http://localhost:5000/trang-thai-lop/${id}`, { ...setClassList, trang_thai: newStatus });
+            await axios.put(`${process.env.REACT_APP_API_URL}/trang-thai-lop/${id}`, { ...setClassList, trang_thai: newStatus });
 
             setData((prevData) =>
                 prevData.map((item) => (item.id === id ? { ...item, trang_thai: newStatus } : item))
@@ -176,7 +176,7 @@ export default function ClassList() {
         if (!result.isConfirmed) return;
 
         try {
-            await axios.delete(`http://localhost:5000/lop/${id}`);
+            await axios.delete(`${process.env.REACT_APP_API_URL}/lop/${id}`);
             Swal.fire(
                 'Đã xóa!',
                 'Bạn đã xóa lớp học này!',
@@ -251,7 +251,7 @@ export default function ClassList() {
                 Loai_id: classList.Loai_id,
             };
 
-            await axios.put(`http://localhost:5000/lop/${currentItem.id}`, payload);
+            await axios.put(`${process.env.REACT_APP_API_URL}/lop/${currentItem.id}`, payload);
 
             setData(data.map(item =>
                 item.id === currentItem.id

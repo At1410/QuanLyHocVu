@@ -42,7 +42,7 @@ export default function CreateClass({ open, setOpen }) {
 
         if (validate()) {
             try {
-                const response = await axios.post('http://localhost:5000/lop', formData);
+                const response = await axios.post(`${process.env.REACT_APP_API_URL}/lop`, formData);
                 if (response.data.success) {
                     handleClose();
                     Swal.fire({

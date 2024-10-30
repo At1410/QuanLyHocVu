@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-
 import { TextField } from "@mui/material";
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 
-export default function SearchChild({ onSearch }) {
+export default function SearchInf({ onSearch }) {
     const [searchTerm, setSearchTerm] = useState('');
 
     const handleChange = (event) => {
@@ -24,9 +23,9 @@ export default function SearchChild({ onSearch }) {
     };
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
             <TextField
-                placeholder="Nhập họ tên trẻ để thống kê"
+                placeholder="Nhập tên danh mục để tìm kiếm"
                 variant="outlined"
                 value={searchTerm}
                 onChange={handleChange}
@@ -36,7 +35,7 @@ export default function SearchChild({ onSearch }) {
                 InputProps={{
                     startAdornment: (
                         <InputAdornment position="start">
-                            <SearchIcon />
+                            <SearchIcon onClick={handleSearch} style={{ cursor: 'pointer' }} />
                         </InputAdornment>
                     ),
                 }}

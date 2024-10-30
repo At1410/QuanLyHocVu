@@ -24,7 +24,7 @@ export default function HomeAccount() {
 
     useEffect(() => {
         if (username) {
-            fetch('http://localhost:5000/tham-gia')
+            fetch(`${process.env.REACT_APP_API_URL}/tham-gia`)
                 .then(response => response.json())
                 .then(data => {
                     const filteredData = data.filter(item => String(item.id_treem) === String(username));
@@ -37,7 +37,7 @@ export default function HomeAccount() {
     }, [username]);
 
     useEffect(() => {
-        fetch('http://localhost:5000/lop-loai')
+        fetch(`${process.env.REACT_APP_API_URL}/lop-loai`)
             .then(response => response.json())
             .then(classData => {
                 const activeClasses = classData.filter(classItem => classItem.trang_thai === 1);
@@ -61,14 +61,14 @@ export default function HomeAccount() {
             const idClass = matchedClasses.map(classItem => classItem.id);
 
             if (idClass.length > 0) {
-                fetch(`http://localhost:5000/giang-day`)
+                fetch(`${process.env.REACT_APP_API_URL}/giang-day`)
                     .then(response => response.json())
                     .then(giangDayData => {
                         const filteredGiangDayData = giangDayData.filter(item =>
                             idClass.includes(item.id_Lop)
                         );
 
-                        fetch(`http://localhost:5000/giao-vien`)
+                        fetch(`${process.env.REACT_APP_API_URL}/giao-vien`)
                             .then(response => response.json())
                             .then(giaoVienData => {
                                 const filteredGiaoVienData = giaoVienData.filter(teacher =>

@@ -82,7 +82,7 @@ export default function RegisterClass() {
         }
 
         try {
-            const response = await axios.post('http://localhost:5000/dang-ky', formData);
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/dang-ky`, formData);
             if (response.data.success) {
                 Swal.fire({
                     position: "center",

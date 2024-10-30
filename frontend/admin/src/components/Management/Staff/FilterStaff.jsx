@@ -28,7 +28,7 @@ export default function FilterStaff({ codeFilterStaff }) {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:5000/nhan-vien')
+        fetch(`${process.env.REACT_APP_API_URL}/nhan-vien`)
             .then(response => response.json())
             .then(data => {
                 setData(data);
