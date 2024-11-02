@@ -4,13 +4,16 @@ import InClass from "./InClass";
 
 import {
     Paper, styled, Pagination, PaginationItem, Button, Grid, Box, Modal,
-    TextField, FormLabel, RadioGroup, FormControlLabel, Radio, FormControl
+    TextField, FormLabel, RadioGroup, FormControlLabel, Radio, FormControl,
+    Typography
 } from '@mui/material';
 
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FileDownloadDoneIcon from '@mui/icons-material/FileDownloadDone';
 import ReorderIcon from '@mui/icons-material/Reorder';
+
+import SearchClass from './SearchClass';
 
 import axios from 'axios';
 import Swal from 'sweetalert2';
@@ -54,7 +57,7 @@ export default function ClassList() {
 
     const StyleDiv = styled('div')({
         textAlign: 'center',
-        marginTop: 30,
+        marginTop: 20,
     });
 
     const StyleDivItem = styled('div')({
@@ -81,6 +84,15 @@ export default function ClassList() {
     }, []);
 
 
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const handleSearch = (term) => {
+        setSearchTerm(term);
+    };
+
+    const filteredData = data.filter(item =>
+        item.Ten_lop && item.Ten_lop.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     const handlePageChange = (event, value) => {
         setCurrentPage(value);
@@ -88,7 +100,7 @@ export default function ClassList() {
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentData = data.slice(indexOfFirstItem, indexOfLastItem);
+    const currentData = filteredData.slice(indexOfFirstItem, indexOfLastItem);
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -279,87 +291,105 @@ export default function ClassList() {
 
     return (
         <div>
-            <StyleDiv>
-                <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                    {currentData.map((item) => (
-                        <Grid key={item.id} item xs={4}>
-                            <Item>
-                                <Grid item xs={10}>
-                                    <StyleDivItem>
-                                        <p>Loại lớp: {item.Loai_lop}</p>
-                                        <p>Mã lớp: {item.id}</p>
-                                        <p>Tên lớp: {item.Ten_lop}</p>
-                                        <p>Ngày bắt đầu: {formatDate(item.Ngay_DB)}</p>
-                                        <p>Ngày kết thúc: {formatDate(item.Ngay_KT)}</p>
-                                        <p>Số lượng trẻ: {item.So_luong}</p>
-                                        <p>Số lượng giáo viên: {item.SL_giaovien}</p>
-                                        <p>Học phí: {item.Hoc_phi}</p>
-                                    </StyleDivItem>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <div style={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        marginRight: '10px',
-                                        marginLeft: '10px'
-                                    }}>
-                                        <StyleButton
-                                            onClick={() => handleOpenModal(item)}
-                                            sx={{
-                                                color: '#89b847',
-                                                '&:hover': {
-                                                    backgroundColor: "#75a73f",
-                                                    color: '#ffffff',
-                                                },
-                                            }}>
-                                            <ReorderIcon />
-                                        </StyleButton>
-                                        <StyleButton
-                                            onClick={() => handleEdit(item)}
-                                            sx={{
-                                                color: '#89b847',
-                                                '&:hover': {
-                                                    backgroundColor: "#75a73f",
-                                                    color: '#ffffff',
-                                                },
-                                            }}>
-                                            <ModeEditIcon />
-                                        </StyleButton>
-                                        <StyleButton
-                                            onClick={() => handleDelete(item.id)}
-                                            sx={{
-                                                borderColor: "#d00000",
-                                                color: "#d00000",
-                                                '&:hover': {
-                                                    backgroundColor: "#d00000",
-                                                    color: "#ffffff",
-                                                },
-                                            }}>
-                                            <DeleteIcon />
-                                        </StyleButton>
-                                        <StyleButton
-                                            onClick={() => handleTick(item.id, item.trang_thai)}
-                                            sx={{
-                                                color: '#1565c0',
-                                                borderColor: "#1565c0",
-                                                '&:hover': {
-                                                    color: '#ffffff',
-                                                    backgroundColor: "#1565c0",
-                                                },
-                                            }}>
-                                            <FileDownloadDoneIcon />
-                                        </StyleButton>
-                                    </div>
-                                </Grid>
-                            </Item>
-                        </Grid>
-                    ))}
+            <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                marginTop: '20px',
+            }}>
+                <SearchClass onSearch={handleSearch} />
+            </div>
 
-                </Grid>
-            </StyleDiv>
+            {filteredData.length === 0 ? (
+                <Typography sx={{ textAlign: 'center', marginTop: 2, fontSize: 18, color: '#000000' }}>
+                    Không tìm thấy lớp phù hợp.
+                </Typography>
+            ) : (
+
+                <StyleDiv>
+                    <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                        {currentData.map((item) => (
+                            <Grid key={item.id} item xs={4}>
+                                <Item>
+                                    <Grid item xs={10}>
+                                        <StyleDivItem>
+                                            <p>Loại lớp: {item.Loai_lop}</p>
+                                            <p>Mã lớp: {item.id}</p>
+                                            <p>Tên lớp: {item.Ten_lop}</p>
+                                            <p>Ngày bắt đầu: {formatDate(item.Ngay_DB)}</p>
+                                            <p>Ngày kết thúc: {formatDate(item.Ngay_KT)}</p>
+                                            <p>Số lượng trẻ: {item.So_luong}</p>
+                                            <p>Số lượng giáo viên: {item.SL_giaovien}</p>
+                                            <p>Học phí: {item.Hoc_phi}</p>
+                                        </StyleDivItem>
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <div style={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            marginRight: '10px',
+                                            marginLeft: '10px'
+                                        }}>
+                                            <StyleButton
+                                                onClick={() => handleOpenModal(item)}
+                                                sx={{
+                                                    color: '#89b847',
+                                                    '&:hover': {
+                                                        backgroundColor: "#75a73f",
+                                                        color: '#ffffff',
+                                                    },
+                                                }}>
+                                                <ReorderIcon />
+                                            </StyleButton>
+                                            <StyleButton
+                                                onClick={() => handleEdit(item)}
+                                                sx={{
+                                                    color: '#89b847',
+                                                    '&:hover': {
+                                                        backgroundColor: "#75a73f",
+                                                        color: '#ffffff',
+                                                    },
+                                                }}>
+                                                <ModeEditIcon />
+                                            </StyleButton>
+                                            <StyleButton
+                                                onClick={() => handleDelete(item.id)}
+                                                sx={{
+                                                    borderColor: "#d00000",
+                                                    color: "#d00000",
+                                                    '&:hover': {
+                                                        backgroundColor: "#d00000",
+                                                        color: "#ffffff",
+                                                    },
+                                                }}>
+                                                <DeleteIcon />
+                                            </StyleButton>
+                                            <StyleButton
+                                                onClick={() => handleTick(item.id, item.trang_thai)}
+                                                sx={{
+                                                    color: '#1565c0',
+                                                    borderColor: "#1565c0",
+                                                    '&:hover': {
+                                                        color: '#ffffff',
+                                                        backgroundColor: "#1565c0",
+                                                    },
+                                                }}>
+                                                <FileDownloadDoneIcon />
+                                            </StyleButton>
+                                        </div>
+                                    </Grid>
+                                </Item>
+                            </Grid>
+                        ))}
+
+                    </Grid>
+                </StyleDiv>
+
+            )}
+
+
 
             <Pagination
-                count={Math.ceil(data.length / itemsPerPage)}
+                count={Math.ceil(filteredData.length / itemsPerPage)}
                 page={currentPage}
                 onChange={handlePageChange}
                 sx={{

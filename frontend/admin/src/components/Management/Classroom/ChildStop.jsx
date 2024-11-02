@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 
 
-import { Paper, styled, Pagination, PaginationItem, Grid } from '@mui/material';
+import { Paper, styled, Pagination, PaginationItem, Grid, Typography } from '@mui/material';
 
 import ReorderIcon from '@mui/icons-material/Reorder';
 import ReplayIcon from '@mui/icons-material/Replay';
+import SearchChild from './SearchChild';
 
 import Swal from 'sweetalert2';
 import axios from "axios";
 import ModalParents from "./ModalParents";
+
 
 export default function ChildStop() {
 
@@ -51,7 +53,7 @@ export default function ChildStop() {
 
     const StyleDiv = styled('div')({
         textAlign: 'center',
-        marginTop: 30,
+        marginTop: 20,
     });
 
     const StyleDivItem = styled('div')({
@@ -87,6 +89,16 @@ export default function ChildStop() {
             });
     }, []);
 
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const handleSearch = (term) => {
+        setSearchTerm(term);
+    };
+
+    const filteredData = data.filter(item =>
+        item.Ten_tre && item.Ten_tre.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     const [isModalParentsOpen, setIsModalParentsOpen] = useState(false);
     const [ParentOf, setParentOf] = useState([]);
 
@@ -107,7 +119,7 @@ export default function ChildStop() {
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentData = data.slice(indexOfFirstItem, indexOfLastItem);
+    const currentData = filteredData.slice(indexOfFirstItem, indexOfLastItem);
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -183,48 +195,65 @@ export default function ChildStop() {
 
     return (
         <div>
-            <StyleDiv>
-                <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                    {currentData.map(item => (
-                        <Grid key={item.id} item xs={4}>
-                            <Item>
-                                <Grid item xs={10}>
-                                    <StyleDivItem>
-                                        <p>Mã trẻ: {item.id}</p>
-                                        <p>Tên trẻ: {item.Ten_tre}</p>
-                                        <p>Giới tính: {Gender(item.Gioi_tinh)}</p>
-                                        <p>Ngày sinh: {formatDate(item.Ngay_sinh)}</p>
-                                        <p>Sức khỏe: {item.Suc_khoe}</p>
-                                    </StyleDivItem>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <div style={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        marginRight: '10px',
-                                        marginLeft: '10px'
-                                    }}>
-                                        <StyleButton
-                                            onClick={() => handleOpenModalParents(item)}
-                                        >
-                                            <ReorderIcon />
-                                        </StyleButton>
-                                        <StyleButton
-                                            onClick={() => handleTick(item.id, item.Trang_thai)}
-                                        >
-                                            <ReplayIcon />
-                                        </StyleButton>
-                                    </div>
-                                </Grid>
-                            </Item>
-                        </Grid>
-                    ))}
 
-                </Grid>
-            </StyleDiv >
+            <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                marginTop: '20px',
+            }}>
+                <SearchChild onSearch={handleSearch} />
+            </div>
+
+            {filteredData.length === 0 ? (
+                <Typography sx={{ textAlign: 'center', marginTop: 2, fontSize: 18, color: '#000000' }}>
+                    Không tìm thấy trẻ phù hợp.
+                </Typography>
+            ) : (
+
+                <StyleDiv>
+                    <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                        {currentData.map(item => (
+                            <Grid key={item.id} item xs={4}>
+                                <Item>
+                                    <Grid item xs={10}>
+                                        <StyleDivItem>
+                                            <p>Mã trẻ: {item.id}</p>
+                                            <p>Tên trẻ: {item.Ten_tre}</p>
+                                            <p>Giới tính: {Gender(item.Gioi_tinh)}</p>
+                                            <p>Ngày sinh: {formatDate(item.Ngay_sinh)}</p>
+                                            <p>Sức khỏe: {item.Suc_khoe}</p>
+                                        </StyleDivItem>
+                                    </Grid>
+                                    <Grid item xs={3}>
+                                        <div style={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            marginRight: '10px',
+                                            marginLeft: '10px'
+                                        }}>
+                                            <StyleButton
+                                                onClick={() => handleOpenModalParents(item)}
+                                            >
+                                                <ReorderIcon />
+                                            </StyleButton>
+                                            <StyleButton
+                                                onClick={() => handleTick(item.id, item.Trang_thai)}
+                                            >
+                                                <ReplayIcon />
+                                            </StyleButton>
+                                        </div>
+                                    </Grid>
+                                </Item>
+                            </Grid>
+                        ))}
+
+                    </Grid>
+                </StyleDiv >
+
+            )};
 
             <Pagination
-                count={Math.ceil(data.length / itemsPerPage)}
+                count={Math.ceil(filteredData.length / itemsPerPage)}
                 page={currentPage}
                 onChange={handlePageChange}
                 sx={{

@@ -56,7 +56,6 @@ export default function Information({ searchTerm }) {
         setCurrentPage(value);
     };
 
-    // Lọc dữ liệu dựa trên từ khóa tìm kiếm
     const filteredData = data.filter(item =>
         item.TenDM.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -168,42 +167,51 @@ export default function Information({ searchTerm }) {
                     </Grid>
                 </Grid>
             </StyleDiv>
-            {currentData.map(item => (
-                <StyleDiv key={item.id}>
-                    <Grid container spacing={3}>
-                        <Grid item xs={2}>
-                            <Typography variant='h5'> {item.TenDM} </Typography>
-                        </Grid>
-                        <Grid item xs={9}>
-                            <Typography> {item.NoiDung} </Typography>
-                        </Grid>
-                        <Grid item xs>
-                            <div style={{ display: 'flex', flexDirection: 'column', }}>
-                                <StyleButton onClick={() => handleEdit(item)} sx={{
-                                    color: "#89b847",
-                                    '&:hover': {
-                                        backgroundColor: "#75a73f",
-                                        color: "#ffffff",
-                                    },
-                                }}>
-                                    <ModeEditIcon />
-                                </StyleButton>
-                                <StyleButton onClick={() => handleDelete(item.id)}
-                                    sx={{
-                                        borderColor: "#d00000",
-                                        color: "#d00000",
+
+            {filteredData.length === 0 ? (
+                <Typography sx={{ textAlign: 'center', marginTop: 2, fontSize: 18, color: '#000000' }}>
+                    Không có thông tin tìm kiếm phù hợp.
+                </Typography>
+            ) : (
+
+                currentData.map(item => (
+                    <StyleDiv key={item.id}>
+                        <Grid container spacing={3}>
+                            <Grid item xs={2}>
+                                <Typography variant='h5'> {item.TenDM} </Typography>
+                            </Grid>
+                            <Grid item xs={9}>
+                                <Typography> {item.NoiDung} </Typography>
+                            </Grid>
+                            <Grid item xs>
+                                <div style={{ display: 'flex', flexDirection: 'column', }}>
+                                    <StyleButton onClick={() => handleEdit(item)} sx={{
+                                        color: "#89b847",
                                         '&:hover': {
-                                            backgroundColor: "#d00000",
+                                            backgroundColor: "#75a73f",
                                             color: "#ffffff",
                                         },
                                     }}>
-                                    <DeleteIcon />
-                                </StyleButton>
-                            </div>
+                                        <ModeEditIcon />
+                                    </StyleButton>
+                                    <StyleButton onClick={() => handleDelete(item.id)}
+                                        sx={{
+                                            borderColor: "#d00000",
+                                            color: "#d00000",
+                                            '&:hover': {
+                                                backgroundColor: "#d00000",
+                                                color: "#ffffff",
+                                            },
+                                        }}>
+                                        <DeleteIcon />
+                                    </StyleButton>
+                                </div>
+                            </Grid>
                         </Grid>
-                    </Grid>
-                </StyleDiv>
-            ))}
+                    </StyleDiv>
+                ))
+
+            )}
 
             <Pagination
                 count={Math.ceil(filteredData.length / itemsPerPage)}

@@ -10,10 +10,19 @@ import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import BlockIcon from '@mui/icons-material/Block';
 
-import { Modal, TextField, Box, Button, FormLabel, RadioGroup, FormControlLabel, Radio, Pagination, PaginationItem } from '@mui/material';
+import {
+    Modal, TextField,
+    Box, Button,
+    FormLabel,
+    RadioGroup,
+    FormControlLabel,
+    Radio, Pagination,
+    PaginationItem,
+    Typography
+} from '@mui/material';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 
-function Staff() {
+function Staff({ searchTerm }) {
     //Style
     const Item = styled(Paper)(({ theme }) => ({
         backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -86,10 +95,15 @@ function Staff() {
         setCurrentPage(value);
     };
 
+    const filteredData = data.filter(item =>
+        item.Ten_Nhan_Vien && item.Ten_Nhan_Vien.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+
     // Tính toán dữ liệu nhân viên hiển thị trên mỗi trang
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentData = data.slice(indexOfFirstItem, indexOfLastItem);
+    const currentData = filteredData.slice(indexOfFirstItem, indexOfLastItem);
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -287,88 +301,97 @@ function Staff() {
                 'error'
             );
         }
-    }
-
+    };
 
     return (
         <div>
-            <StyleDiv>
-                <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                    {currentData.map((item, index) => (
-                        <Grid key={`${item.id}-${index}`} item xs={6}>
-                            <Item>
-                                <Grid item xs={4}
-                                    sx={{
-                                        paddingLeft: '10px',
-                                    }}
-                                >
-                                    <StyleImg
-                                        src={item.image_nv}
-                                        alt={item.Ten_Nhan_Vien} />
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <StyleDivItem>
-                                        <p>Tên Nhân Viên: {item.Ten_Nhan_Vien}</p>
-                                        <p>Ngày sinh: {formatDate(item.Ngay_sinh)}</p>
-                                        <p>Giới tính: {Gender(item.Gioi_tinh)}</p>
-                                        <p>Địa chỉ: {item.Dia_chi}</p>
-                                        <p>Quê quán: {item.Que_quan}</p>
-                                        <p>Số điện thoại: {item.Sdt}</p>
-                                        <p>CCCD: {item.CMND}</p>
-                                        <p>Công việc:  {item.Ten_chuc_vu}</p>
-                                    </StyleDivItem>
-                                </Grid>
-                                <Grid item xs={2}>
-                                    <div style={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        marginRight: '10px',
-                                        marginLeft: '10px'
-                                    }}>
-                                        <StyleButton
-                                            onClick={() => handleEdit(item)}
-                                            sx={{
-                                                color: '#89b847',
-                                                '&:hover': {
-                                                    backgroundColor: "#75a73f",
-                                                    color: "#ffffff"
-                                                },
-                                            }}>
-                                            <ModeEditIcon />
-                                        </StyleButton>
-                                        <StyleButton onClick={() => handleDelete(item.id)}
-                                            sx={{
-                                                color: '#d00000',
-                                                borderColor: '#d00000',
-                                                '&:hover': {
-                                                    backgroundColor: "#d00000",
-                                                    color: "#ffffff"
-                                                },
-                                            }}>
-                                            <DeleteIcon />
-                                        </StyleButton>
-                                        <StyleButton onClick={() => handleTick(item.id, item.trang_thai)}
-                                            sx={{
-                                                color: '#d00000',
-                                                borderColor: '#d00000',
-                                                '&:hover': {
-                                                    backgroundColor: "#d00000",
-                                                    color: "#ffffff"
-                                                },
-                                            }}>
-                                            <BlockIcon />
-                                        </StyleButton>
-                                    </div>
-                                </Grid>
-                            </Item>
-                        </Grid>
-                    ))}
 
-                </Grid>
-            </StyleDiv>
+            {filteredData.length === 0 ? (
+                <Typography sx={{ textAlign: 'center', marginTop: 2, fontSize: 18, color: '#000000' }}>
+                    Không có thông tin tìm kiếm phù hợp.
+                </Typography>
+            ) : (
+
+                <StyleDiv>
+                    <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                        {currentData.map((item, index) => (
+                            <Grid key={`${item.id}-${index}`} item xs={6}>
+                                <Item>
+                                    <Grid item xs={4}
+                                        sx={{
+                                            paddingLeft: '10px',
+                                        }}
+                                    >
+                                        <StyleImg
+                                            src={item.image_nv}
+                                            alt={item.Ten_Nhan_Vien} />
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <StyleDivItem>
+                                            <p>Tên Nhân Viên: {item.Ten_Nhan_Vien}</p>
+                                            <p>Ngày sinh: {formatDate(item.Ngay_sinh)}</p>
+                                            <p>Giới tính: {Gender(item.Gioi_tinh)}</p>
+                                            <p>Địa chỉ: {item.Dia_chi}</p>
+                                            <p>Quê quán: {item.Que_quan}</p>
+                                            <p>Số điện thoại: {item.Sdt}</p>
+                                            <p>CCCD: {item.CMND}</p>
+                                            <p>Công việc:  {item.Ten_chuc_vu}</p>
+                                        </StyleDivItem>
+                                    </Grid>
+                                    <Grid item xs={2}>
+                                        <div style={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            marginRight: '10px',
+                                            marginLeft: '10px'
+                                        }}>
+                                            <StyleButton
+                                                onClick={() => handleEdit(item)}
+                                                sx={{
+                                                    color: '#89b847',
+                                                    '&:hover': {
+                                                        backgroundColor: "#75a73f",
+                                                        color: "#ffffff"
+                                                    },
+                                                }}>
+                                                <ModeEditIcon />
+                                            </StyleButton>
+                                            <StyleButton onClick={() => handleDelete(item.id)}
+                                                sx={{
+                                                    color: '#d00000',
+                                                    borderColor: '#d00000',
+                                                    '&:hover': {
+                                                        backgroundColor: "#d00000",
+                                                        color: "#ffffff"
+                                                    },
+                                                }}>
+                                                <DeleteIcon />
+                                            </StyleButton>
+                                            <StyleButton onClick={() => handleTick(item.id, item.trang_thai)}
+                                                sx={{
+                                                    color: '#d00000',
+                                                    borderColor: '#d00000',
+                                                    '&:hover': {
+                                                        backgroundColor: "#d00000",
+                                                        color: "#ffffff"
+                                                    },
+                                                }}>
+                                                <BlockIcon />
+                                            </StyleButton>
+                                        </div>
+                                    </Grid>
+                                </Item>
+                            </Grid>
+                        ))}
+
+                    </Grid>
+                </StyleDiv>
+
+            )}
+
 
             <Pagination
-                count={Math.ceil(data.length / itemsPerPage)}
+                count={Math.ceil(filteredData.length / itemsPerPage)}
                 page={currentPage}
                 onChange={handlePageChange}
                 sx={{

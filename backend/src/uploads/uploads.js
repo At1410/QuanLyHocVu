@@ -15,7 +15,7 @@ const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
         folder: "employee_photos",
-        allowed_formats: ["jpg", "png", "jpeg"],
+        allowed_formats: [],
     },
 });
 

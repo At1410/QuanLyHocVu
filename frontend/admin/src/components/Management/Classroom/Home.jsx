@@ -21,7 +21,6 @@ import ChildList from './ChildList';
 import FilterClass from "./FilterClass";
 import FilterChild from "./FilterChild";
 
-import SearchBar from "../SearchBar";
 import ChildStop from './ChildStop';
 import ClassStop from "./ClassStop";
 
@@ -33,22 +32,6 @@ const actions = [
 ];
 
 export default function ManagementClassRoomHome() {
-
-    //Style
-    // const StyleButton = styled(Button)({
-    //     backgroundColor: "#89b847",
-    //     borderRadius: 3,
-    //     color: '#ffffff',
-    //     marginLeft: '20px',
-    //     paddingLeft: 15,
-    //     paddingRight: 15,
-    //     border: '2px solid #89b847',
-    //     cursor: 'pointer',
-    //     borderColor: "#89b847",
-    //     '&:hover': {
-    //         backgroundColor: "#75a73f",
-    //     },
-    // });
 
     const StyleButton = styled(Button)(({ active }) => ({
         marginLeft: 20,
@@ -145,8 +128,8 @@ export default function ManagementClassRoomHome() {
                     display: 'flex',
                     justifyContent: 'center',
                 }}>
-                    <SearchBar />
                     <StyleButton
+                        variant="contained"
                         onClick={handleStudentToggle}
                         active={activeComponent === 'childStop' || activeComponent === 'childList'}
                     >
@@ -195,6 +178,7 @@ export default function ManagementClassRoomHome() {
                     )}
 
                     <StyleButton
+                        variant="contained"
                         onClick={handleClassToggle}
                         active={activeComponent === 'classStop' || activeComponent === 'classList'}
                     >

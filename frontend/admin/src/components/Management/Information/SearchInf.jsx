@@ -25,6 +25,7 @@ export default function SearchInf({ onSearch }) {
     return (
         <div style={{ display: 'flex', justifyContent: 'center' }}>
             <TextField
+                autoFocus
                 placeholder="Nhập tên danh mục để tìm kiếm"
                 variant="outlined"
                 value={searchTerm}

@@ -14,15 +14,11 @@ const routesGet = require('./src/routes/route');
 const routesPost = require('./src/routes/routerPost');
 const routesPut = require('./src/routes/routerPut');
 const routesDelete = require('./src/routes/routerDelete');
-const routesFind = require('./src/routes/routerFind');
 const uploadRoutes = require('./src/uploads/uploads.js');
 
 app.use('/', routesGet);
 
 app.use("/", uploadRoutes);
-
-app.get('/tim-kiem/nhan-vien', routesFind);
-app.get('/tim-kiem/thong-tin', routesFind);
 
 app.post('/dang-ky', routesPost);
 app.post('/thong-tin', routesPost);

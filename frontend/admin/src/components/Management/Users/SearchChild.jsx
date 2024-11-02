@@ -36,7 +36,7 @@ export default function SearchChild({ onSearch }) {
                 InputProps={{
                     startAdornment: (
                         <InputAdornment position="start">
-                            <SearchIcon />
+                            <SearchIcon onClick={handleSearch} />
                         </InputAdornment>
                     ),
                 }}

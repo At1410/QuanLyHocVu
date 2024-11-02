@@ -3,7 +3,7 @@ import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 
-function SearchBar({ onSearch }) {
+function SearchClass({ onSearch }) {
   const [searchQuery, setSearchQuery] = useState('');
 
   const handleSearch = (event) => {
@@ -18,7 +18,7 @@ function SearchBar({ onSearch }) {
       <TextField
         value={searchQuery}
         onChange={handleSearch}
-        placeholder="Nhập dữ liệu tìm kiếm"
+        placeholder="Nhập tên lớp để tìm kiếm"
         variant="outlined"
         size="small"
         sx={{ width: '350px' }}
@@ -35,4 +35,4 @@ function SearchBar({ onSearch }) {
   );
 }
 
-export default SearchBar;
+export default SearchClass;

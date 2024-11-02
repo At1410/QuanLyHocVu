@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Staff from "./Staff";
 import CreateStaff from "./CreateStaff";
-import SearchBar from "../SearchBar";
+import SearchResults from "./SearchResults";
 import FilterStaff from "./FilterStaff";
 import StopStaff from "./StopStaff";
 import { IconButton, Menu, MenuItem, Typography, Button, styled } from '@mui/material';
@@ -46,6 +46,13 @@ export default function HomeStaff() {
     const toggleStaffView = () => {
         setShowStoppedStaff(!showStoppedStaff);
         setShowFilter(false);
+        setSelectedFilter('');
+    };
+
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const handleSearch = (term) => {
+        setSearchTerm(term);
     };
 
     return (
@@ -54,7 +61,7 @@ export default function HomeStaff() {
                 display: 'flex',
                 justifyContent: 'center',
             }}>
-                <SearchBar />
+                <SearchResults onSearch={handleSearch} />
                 <CreateStaff />
                 <StyleButton variant="contained" sx={{
                     paddingLeft: '15px',
@@ -113,7 +120,7 @@ export default function HomeStaff() {
                 padding: '20px',
             }}>
                 {showFilter && <FilterStaff codeFilterStaff={selectedFilterCode} />}
-                {!showFilter && (showStoppedStaff ? <StopStaff /> : <Staff />)}
+                {!showFilter && (showStoppedStaff ? <StopStaff /> : <Staff searchTerm={searchTerm} />)}
             </div>
         </div >
     );
