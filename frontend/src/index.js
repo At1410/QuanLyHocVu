@@ -8,7 +8,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 const theme = createTheme({
   palette: {
     background: {
-      default: '#fff4ef', // Thiết lập màu nền toàn bộ trang
+      default: '#fff4ef',
     },
   },
 });
