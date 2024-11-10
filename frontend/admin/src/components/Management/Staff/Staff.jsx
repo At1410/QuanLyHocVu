@@ -367,7 +367,8 @@ function Staff({ searchTerm }) {
                                                 }}>
                                                 <DeleteIcon />
                                             </StyleButton>
-                                            <StyleButton onClick={() => handleTick(item.id, item.trang_thai)}
+                                            <StyleButton
+                                                onClick={() => handleTick(item.id, item.trang_thai)}
                                                 sx={{
                                                     color: '#d00000',
                                                     borderColor: '#d00000',

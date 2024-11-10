@@ -88,7 +88,7 @@ export default function FilterStaff({ codeFilterStaff }) {
                         ) : (
                             <TableRow>
                                 <TableCell colSpan={4} align="center">
-                                    Loại lớp không có lớp học nào đang diễn ra.
+                                    Không có nhân viên nào ở chức vụ này đang làm việc.
                                 </TableCell>
                             </TableRow>
                         )}
@@ -126,7 +126,7 @@ export default function FilterStaff({ codeFilterStaff }) {
                         ) : (
                             <TableRow>
                                 <TableCell colSpan={4} align="center">
-                                    Loại lớp này chưa có lớp học nào đã kết thúc.
+                                    Không có nhân viên nào ở chức vụ này nghỉ việc.
                                 </TableCell>
                             </TableRow>
                         )}

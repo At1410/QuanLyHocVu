@@ -6,7 +6,7 @@ import Grid from '@mui/material/Grid';
 
 import { Pagination, PaginationItem } from '@mui/material';
 
-function StopStaff() {
+function StopStaff({ searchTerm }) {
 
     const Item = styled(Paper)(({ theme }) => ({
         backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -32,7 +32,7 @@ function StopStaff() {
     });
 
     const StyleImg = styled('img')({
-        width: '150px', // Điều chỉnh kích thước ảnh
+        width: '150px',
         height: '250px',
         objectFit: 'cover',
         borderRadius: '5px',
@@ -62,6 +62,10 @@ function StopStaff() {
             });
     }, []);
 
+    const filteredData = data.filter(item =>
+        item.Ten_Nhan_Vien && item.Ten_Nhan_Vien.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     // Xử lý thay đổi trang
     const handlePageChange = (event, value) => {
         setCurrentPage(value);
@@ -70,7 +74,7 @@ function StopStaff() {
     // Tính toán dữ liệu nhân viên hiển thị trên mỗi trang
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentData = data.slice(indexOfFirstItem, indexOfLastItem);
+    const currentData = filteredData.slice(indexOfFirstItem, indexOfLastItem);
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -100,7 +104,7 @@ function StopStaff() {
                                 </Grid>
                                 <Grid item xs={6}>
                                     <StyleDivItem>
-                                        <p>Tên Giáo Viên: {item.Ten_Nhan_Vien}</p>
+                                        <p>Tên Nhân Viên: {item.Ten_Nhan_Vien}</p>
                                         <p>Ngày sinh: {formatDate(item.Ngay_sinh)}</p>
                                         <p>Giới tính: {Gender(item.Gioi_tinh)}</p>
                                         <p>Địa chỉ: {item.Dia_chi}</p>
@@ -117,7 +121,7 @@ function StopStaff() {
             </StyleDiv>
 
             <Pagination
-                count={Math.ceil(data.length / itemsPerPage)}
+                count={Math.ceil(filteredData.length / itemsPerPage)}
                 page={currentPage}
                 onChange={handlePageChange}
                 sx={{

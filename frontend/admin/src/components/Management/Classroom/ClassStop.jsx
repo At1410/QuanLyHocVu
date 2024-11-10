@@ -230,16 +230,6 @@ export default function ClassStop() {
                                                 }}>
                                                 <ReorderIcon />
                                             </StyleButton>
-                                            <StyleButton
-                                                onClick={() => handleTick(item.id)}
-                                                sx={{
-                                                    '&:hover': {
-                                                        backgroundColor: "#75a73f",
-                                                        color: "#ffffff",
-                                                    },
-                                                }}>
-                                                <ReplayIcon />
-                                            </StyleButton>
                                         </div>
                                     </Grid>
                                 </Item>
@@ -247,9 +237,10 @@ export default function ClassStop() {
                         ))}
 
                     </Grid>
-                </StyleDiv>
+                </StyleDiv >
 
-            )}
+            )
+            }
 
 
 
@@ -272,6 +263,6 @@ export default function ClassStop() {
                 handleClose={handleCloseModal}
                 classId={currentClassId}
             />
-        </div>
+        </div >
     );
 };

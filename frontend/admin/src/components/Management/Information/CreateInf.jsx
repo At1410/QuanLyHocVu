@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 import Swal from 'sweetalert2'
 
 import { Modal, TextField, Button, Box } from '@mui/material';
 
-export default function CreateInf({ }) {
+export default function CreateInf() {
 
     const [formData, setFormData] = useState({
         TenDM: '',
@@ -13,6 +13,7 @@ export default function CreateInf({ }) {
     });
 
     const [open, setOpen] = useState(false);
+    const [data, setData] = useState([]);
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -27,6 +28,17 @@ export default function CreateInf({ }) {
         });
     };
 
+    useEffect(() => {
+        fetch(`${process.env.REACT_APP_API_URL}/thong-tin`)
+            .then(response => response.json())
+            .then(data => {
+                setData(data);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    }, []);
+
     const validate = () => {
         let tempErrors = {};
         tempErrors.TenDM = formData.TenDM ? "" : "Tên danh mục là bắt buộc.";
@@ -40,11 +52,22 @@ export default function CreateInf({ }) {
 
         if (validate()) {
             try {
+
+                const isDuplicate = data.some(item => item.TenDM === formData.TenDM);
+
+                if (isDuplicate) {
+                    Swal.fire(
+                        'Lỗi!',
+                        'Tên danh mục đã tồn tại!',
+                        'error'
+                    );
+                    return;
+                }
+
                 handleClose();
 
                 const response = await axios.post(`${process.env.REACT_APP_API_URL}/thong-tin`, formData);
                 if (response.data.success) {
-                    // Hiển thị thông báo thành công
                     Swal.fire({
                         position: 'center',
                         icon: 'success',
@@ -52,7 +75,6 @@ export default function CreateInf({ }) {
                         showConfirmButton: false,
                         timer: 1500
                     }).then(() => {
-                        // Reset form data
                         setFormData({
                             TenDM: '',
                             NoiDung: '',
@@ -88,7 +110,7 @@ export default function CreateInf({ }) {
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    zIndex: 1300,
+                    zIndex: 1000,
                 }}
             >
                 <Box

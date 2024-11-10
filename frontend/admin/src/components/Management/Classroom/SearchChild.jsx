@@ -18,10 +18,10 @@ function SearchChild({ onSearch }) {
       <TextField
         value={searchQuery}
         onChange={handleSearch}
-        placeholder="Nhập tên lớp để tìm kiếm"
+        placeholder="Nhập tên trẻ để tìm kiếm"
         variant="outlined"
         size="small"
-        sx={{ width: '350px' }}
+        sx={{ width: '450px' }}
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">

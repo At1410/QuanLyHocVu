@@ -21,7 +21,7 @@ function SearchClass({ onSearch }) {
         placeholder="Nhập tên lớp để tìm kiếm"
         variant="outlined"
         size="small"
-        sx={{ width: '350px' }}
+        sx={{ width: '450px' }}
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">

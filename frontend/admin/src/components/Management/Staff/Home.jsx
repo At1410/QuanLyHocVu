@@ -120,7 +120,7 @@ export default function HomeStaff() {
                 padding: '20px',
             }}>
                 {showFilter && <FilterStaff codeFilterStaff={selectedFilterCode} />}
-                {!showFilter && (showStoppedStaff ? <StopStaff /> : <Staff searchTerm={searchTerm} />)}
+                {!showFilter && (showStoppedStaff ? <StopStaff searchTerm={searchTerm} /> : <Staff searchTerm={searchTerm} />)}
             </div>
         </div >
     );

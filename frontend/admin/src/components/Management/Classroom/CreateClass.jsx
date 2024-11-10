@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import Swal from 'sweetalert2';
 import { Modal, TextField, Box, Button, FormHelperText, FormLabel, RadioGroup, FormControlLabel, Radio, FormControl } from '@mui/material';
@@ -33,15 +33,39 @@ export default function CreateClass({ open, setOpen }) {
         return Object.values(tempErrors).every(x => x === "");
     };
 
+    const [data, setData] = useState([]);
+
     const handleClose = () => setOpen(false);
+
+    useEffect(() => {
+        fetch(`${process.env.REACT_APP_API_URL}/lop`)
+            .then(response => response.json())
+            .then(data => {
+                setData(data);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    }, []);
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        console.log('Dữ liệu gửi đi:', formData);
-
         if (validate()) {
             try {
+
+                const isDuplicate = data.some(item => item.Ten_lop === formData.Ten_lop);
+
+                if (isDuplicate) {
+                    Swal.fire(
+                        'Lỗi!',
+                        'Tên lớp đã tồn tại!',
+                        'error'
+                    );
+                    return;
+                }
+
                 const response = await axios.post(`${process.env.REACT_APP_API_URL}/lop`, formData);
                 if (response.data.success) {
                     handleClose();
